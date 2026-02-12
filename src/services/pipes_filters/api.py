@@ -9,7 +9,7 @@ import logging
 from typing import Any, Dict, List
 from datetime import datetime
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Body
 from pydantic import BaseModel, Field
 import uvicorn
 
@@ -141,7 +141,7 @@ async def execute_pipeline(request: PipelineRequest) -> PipelineResponse:
 
 
 @app.post("/pipeline/preset/text-analysis", response_model=PipelineResponse)
-async def execute_text_analysis_pipeline(input_text: str = Field(...)) -> PipelineResponse:
+async def execute_text_analysis_pipeline(input_text: str = Body(...)) -> PipelineResponse:
     """Execute a preset text analysis pipeline (sentiment, entities, summary)."""
     request = PipelineRequest(
         input_data=input_text,
@@ -168,7 +168,7 @@ async def execute_text_analysis_pipeline(input_text: str = Field(...)) -> Pipeli
 
 
 @app.post("/pipeline/preset/parallel-analysis", response_model=PipelineResponse)
-async def execute_parallel_analysis(input_text: str = Field(...)) -> PipelineResponse:
+async def execute_parallel_analysis(input_text: str = Body(...)) -> PipelineResponse:
     """Execute multiple analyses in parallel."""
     request = PipelineRequest(
         input_data=input_text,

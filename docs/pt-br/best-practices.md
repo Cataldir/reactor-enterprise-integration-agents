@@ -521,14 +521,18 @@ async def test_full_flow(test_namespace):
 
 **✅ Use Docker:**
 ```dockerfile
-FROM python:3.13-slim
+FROM python:3.11-slim
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
 
 COPY . .
+
+ENV PATH="/app/.venv/bin:$PATH"
 
 CMD ["python", "-m", "patterns.message_queue"]
 ```

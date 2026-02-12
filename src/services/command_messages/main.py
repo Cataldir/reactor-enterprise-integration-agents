@@ -22,7 +22,7 @@ import uuid
 
 from azure.eventhub import EventData
 from azure.ai.projects import AIProjectClient
-from azure.ai.projects.models import MessageRole
+from azure.ai.agents.models import MessageRole
 
 from shared.utils import get_project_client, load_env_config, EventHubAdapter
 

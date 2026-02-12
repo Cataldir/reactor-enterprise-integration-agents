@@ -1,224 +1,209 @@
-# 🎬 Pattern 2: Pipes and Filters with Cognitive Capabilities
+# 🎬 Padrão 2: Pipes and Filters com Capacidades Cognitivas
 
-## 📺 YouTube Presentation Style
+## 📺 Estilo de Apresentação YouTube
 
-What's up, cloud architects! 🚀 Today we're exploring one of the COOLEST enterprise integration patterns - **Pipes and Filters with AI superpowers**!
+E aí, arquitetos de cloud! 🚀 Hoje vamos explorar um dos padrões de integração empresarial MAIS legais - **Pipes and Filters com superpoderes de IA**!
 
-## 🎯 What's This Pattern About?
+## 🎯 Sobre o Que é Este Padrão?
 
-Think of it like an **assembly line for data**, but instead of robots, we have **AI agents** at each station! Each agent:
-- 🔍 **Analyzes** the data
-- 🎨 **Transforms** it intelligently  
-- 🎯 **Passes** it to the next agent
-- 🧠 **Learns** from context
+Pense como uma **linha de montagem para dados**, mas em vez de robôs, temos **agentes de IA** em cada estação! Cada agente:
+- 🔍 **Analisa** os dados
+- 🎨 **Transforma** de forma inteligente  
+- 🎯 **Passa** para o próximo agente
+- 🧠 **Aprende** com o contexto
 
-## 🏗️ Architecture Overview
+## 🏗️ Visão Geral da Arquitetura
 
-```
-Input Data
-    │
-    ▼
-┌─────────────────┐
-│  Filter 1       │
-│  (AI Agent)     │──► Sentiment Analysis
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Filter 2       │
-│  (AI Agent)     │──► Entity Extraction
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Filter 3       │
-│  (AI Agent)     │──► Summarization
-└────────┬────────┘
-         │
-         ▼
-    Output Data
+```mermaid
+graph TB
+    INPUT["Dados de Entrada"] --> F1["Filtro 1\n(Agente IA)"]
+    F1 -->|"Ànálise de Sentimento"| F2["Filtro 2\n(Agente IA)"]
+    F2 -->|"Extração de Entidades"| F3["Filtro 3\n(Agente IA)"]
+    F3 -->|"Sumarização"| OUTPUT["Dados de Saída"]
 ```
 
-### 🌟 Parallel Pipeline Option
+### 🌟 Opção de Pipeline Paralelo
 
+```mermaid
+graph LR
+    INPUT["Dados de Entrada"] --> FA["Filtro A\n(Sentimento)"]
+    INPUT --> FB["Filtro B\n(Tópicos)"]
+    INPUT --> FC["Filtro C\n(Idioma)"]
+    FA --> OUT["Todos os Resultados"]
+    FB --> OUT
+    FC --> OUT
 ```
-                     ┌─► Filter A (Sentiment) ──┐
-                     │                           │
-Input Data ──────────┼─► Filter B (Topics) ─────┼──► All Results
-                     │                           │
-                     └─► Filter C (Language) ────┘
-```
 
-## 🔥 The Enterprise Integration Pattern
+## 🔥 O Padrão de Integração Empresarial
 
-**Pipes and Filters** is a classic pattern where:
+**Pipes and Filters** é um padrão clássico onde:
 
-1. **Filters** - Independent processing units (our AI agents!)
-2. **Pipes** - Data flow channels between filters
-3. **Sequential** - Process one after another
-4. **Parallel** - Process simultaneously for speed
+1. **Filtros** - Unidades de processamento independentes (nossos agentes de IA!)
+2. **Pipes** - Canais de fluxo de dados entre filtros
+3. **Sequencial** - Processa um após o outro
+4. **Paralelo** - Processa simultaneamente para maior velocidade
 
-### Why AI-Powered Filters Rock! 🎸
+### Por Que Filtros com IA São Incríveis! 🎸
 
-- ✅ **Context-Aware** - Agents understand what they're processing
-- ✅ **Flexible** - Easy to add/remove/reorder filters
-- ✅ **Scalable** - Each filter can scale independently
-- ✅ **Reusable** - Filters can be used in multiple pipelines
-- ✅ **Maintainable** - Change one filter without affecting others
+- ✅ **Cientes do Contexto** - Agentes entendem o que estão processando
+- ✅ **Flexíveis** - Fácil adicionar/remover/reordenar filtros
+- ✅ **Escaláveis** - Cada filtro pode escalar independentemente
+- ✅ **Reutilizáveis** - Filtros podem ser usados em múltiplos pipelines
+- ✅ **Manuteníveis** - Altere um filtro sem afetar os outros
 
-## 🛠️ Technologies Used
+## 🛠️ Tecnologias Utilizadas
 
-- **Azure AI Foundry Agents** - Each filter is an AI agent 🤖
-- **FastAPI** - REST API for pipeline execution 🚀
-- **Async Python** - Non-blocking, concurrent processing ⚡
-- **MCP Layer** - Standardized communication protocol 🔗
-- **Pydantic** - Data validation and serialization ✅
+- **Agentes Azure AI Foundry** - Cada filtro é um agente de IA 🤖
+- **FastAPI** - API REST para execução de pipelines 🚀
+- **Python Assíncrono** - Processamento concorrente e não-bloqueante ⚡
+- **Camada MCP** - Protocolo de comunicação padronizado 🔗
+- **Pydantic** - Validação e serialização de dados ✅
 
-## 🚀 Quick Start
+## 🚀 Início Rápido
 
-### Prerequisites
+### Pré-requisitos
 
-1. Azure AI Foundry project configured
+1. Projeto Azure AI Foundry configurado
 2. Python 3.11+
-3. Environment variables set
+3. Variáveis de ambiente configuradas
 
-### Setup
+### Configuração
 
-1. **Navigate to pattern:**
+1. **Navegue até o padrão:**
 ```bash
-cd pattern-2-pipes-filters
+cd src/services/pipes_filters
 ```
 
-2. **Configure environment:**
+2. **Configure o ambiente:**
 ```bash
 cp ../.env.example .env
-# Edit with your credentials
+# Edite com suas credenciais
 ```
 
-3. **Install dependencies:**
+3. **Instale as dependências:**
 ```bash
-pip install -r ../requirements.txt
+uv sync
 ```
 
-### 🏃 Running the Application
+### 🏃 Executando a Aplicação
 
-**Option 1: Demo Script**
+**Opção 1: Script de Demonstração**
 ```bash
 python main.py
 ```
 
-**Option 2: REST API**
+**Opção 2: API REST**
 ```bash
 python api.py
-# OR
+# OU
 uvicorn api:app --port 8001 --reload
 ```
 
-### 🐳 Docker Deployment
+### 🐳 Deploy com Docker
 
-**Build:**
+**Construir:**
 ```bash
-# Production
+# Produção
 docker build -t pipes-filters-agent --target production .
 
-# Development
+# Desenvolvimento
 docker build -t pipes-filters-agent-dev --target development .
 ```
 
-**Run:**
+**Executar:**
 ```bash
-# Production
+# Produção
 docker run --env-file .env pipes-filters-agent
 
-# Development with hot reload
-docker run -p 8001:8001 -v $(pwd):/app/pattern-2-pipes-filters --env-file .env pipes-filters-agent-dev
+# Desenvolvimento com hot reload
+docker run -p 8001:8001 -v $(pwd):/app/src/services/pipes_filters --env-file .env pipes-filters-agent-dev
 ```
 
-## 📡 API Endpoints
+## 📡 Endpoints da API
 
-### Execute Custom Pipeline
+### Executar Pipeline Personalizado
 ```bash
 POST /pipeline/execute
 {
-  "input_data": "Your text here...",
+  "input_data": "Seu texto aqui...",
   "filters": [
     {
-      "name": "Sentiment Analyzer",
-      "instructions": "Analyze sentiment..."
+      "name": "Analisador de Sentimento",
+      "instructions": "Analisar sentimento..."
     },
     {
-      "name": "Entity Extractor",
-      "instructions": "Extract entities..."
+      "name": "Extrator de Entidades",
+      "instructions": "Extrair entidades..."
     }
   ],
   "parallel": false
 }
 ```
 
-### Preset: Text Analysis Pipeline
+### Preset: Pipeline de Análise de Texto
 ```bash
 POST /pipeline/preset/text-analysis
 {
-  "input_text": "Microsoft announced Azure AI Foundry today..."
+  "input_text": "Microsoft anunciou o Azure AI Foundry hoje..."
 }
 ```
 
-### Preset: Parallel Analysis
+### Preset: Análise Paralela
 ```bash
 POST /pipeline/preset/parallel-analysis
 {
-  "input_text": "Your text for parallel processing..."
+  "input_text": "Seu texto para processamento paralelo..."
 }
 ```
 
-### Health Check
+### Verificação de Saúde
 ```bash
 GET /health
 ```
 
-## 💡 How It Works
+## 💡 Como Funciona
 
-### Sequential Pipeline
+### Pipeline Sequencial
 
-1. **Input** enters the pipeline
-2. **Filter 1** processes and transforms
-3. **Filter 2** receives Filter 1's output
-4. **Filter 3** receives Filter 2's output
-5. **Final output** is returned
+1. **Entrada** entra no pipeline
+2. **Filtro 1** processa e transforma
+3. **Filtro 2** recebe a saída do Filtro 1
+4. **Filtro 3** recebe a saída do Filtro 2
+5. **Saída final** é retornada
 
-Each filter adds value and context!
+Cada filtro agrega valor e contexto!
 
-### Parallel Pipeline
+### Pipeline Paralelo
 
-1. **Input** is copied to all filters
-2. **All filters** process simultaneously
-3. **Results** are collected together
-4. **All outputs** returned as array
+1. **Entrada** é copiada para todos os filtros
+2. **Todos os filtros** processam simultaneamente
+3. **Resultados** são coletados juntos
+4. **Todas as saídas** retornadas como array
 
-Perfect for independent analyses!
+Perfeito para análises independentes!
 
-## 🎓 Key Concepts
+## 🎓 Conceitos-Chave
 
-### CognitiveFilter Class
-Each filter is an AI agent that:
-- Has specific instructions
-- Maintains conversation context
-- Processes data intelligently
-- Records transformations
+### Classe CognitiveFilter
+Cada filtro é um agente de IA que:
+- Possui instruções específicas
+- Mantém contexto de conversação
+- Processa dados de forma inteligente
+- Registra transformações
 
 ```python
 filter = CognitiveFilter(
-    name="Sentiment Analyzer",
+    name="Analisador de Sentimento",
     project_client=client,
     agent_id=agent_id,
-    instructions="Analyze sentiment..."
+    instructions="Analisar sentimento..."
 )
 ```
 
-### Pipeline Composition
-Build pipelines fluently:
+### Composição de Pipeline
+Construa pipelines de forma fluente:
 ```python
-pipeline = Pipeline("My Pipeline")
+pipeline = Pipeline("Meu Pipeline")
     .add_filter(filter1)
     .add_filter(filter2)
     .add_filter(filter3)
@@ -227,95 +212,95 @@ result = await pipeline.execute(data)
 ```
 
 ### PipelineData
-Carries information through the pipeline:
-- **content** - The actual data
-- **metadata** - Processing information
-- **transformations** - Audit trail
+Transporta informações pelo pipeline:
+- **content** - Os dados reais
+- **metadata** - Informações de processamento
+- **transformations** - Trilha de auditoria
 
-## 📊 Real-World Use Cases
+## 📊 Casos de Uso do Mundo Real
 
-Perfect for:
+Perfeito para:
 
-1. 📄 **Document Processing**
-   - Extract → Classify → Summarize → Store
+1. 📄 **Processamento de Documentos**
+   - Extrair → Classificar → Resumir → Armazenar
 
-2. 📧 **Email Processing**
-   - Parse → Sentiment → Priority → Route
+2. 📧 **Processamento de E-mails**
+   - Analisar → Sentimento → Prioridade → Rotear
 
-3. 🎥 **Content Moderation**
-   - Detect → Analyze → Score → Action
+3. 🎥 **Moderação de Conteúdo**
+   - Detectar → Analisar → Pontuar → Ação
 
-4. 📊 **Data Enrichment**
-   - Clean → Validate → Enhance → Format
+4. 📊 **Enriquecimento de Dados**
+   - Limpar → Validar → Enriquecer → Formatar
 
-5. 🔍 **Log Analysis**
-   - Parse → Detect Patterns → Alert → Archive
+5. 🔍 **Análise de Logs**
+   - Analisar → Detectar Padrões → Alertar → Arquivar
 
-## 🎯 Advanced Features
+## 🎯 Funcionalidades Avançadas
 
-### Custom Filter Instructions
-Tailor each filter's behavior:
+### Instruções Personalizadas de Filtro
+Personalize o comportamento de cada filtro:
 ```python
 FilterConfig(
-    name="Custom Analyzer",
+    name="Analisador Personalizado",
     instructions="""
-    You are an expert analyzer.
-    Focus on: X, Y, Z
-    Output format: JSON
+    Você é um analisador especialista.
+    Foque em: X, Y, Z
+    Formato de saída: JSON
     """
 )
 ```
 
-### Error Handling
-Pipelines continue even if a filter fails:
-- Failed filters are logged
-- Metadata tracks status
-- Downstream filters get last good output
+### Tratamento de Erros
+Pipelines continuam mesmo se um filtro falhar:
+- Filtros com falha são registrados em log
+- Metadados rastreiam o status
+- Filtros subsequentes recebem a última saída válida
 
-### Performance Optimization
-- Use parallel pipelines for independent tasks
-- Reuse agent threads for multiple runs
-- Async execution throughout
+### Otimização de Desempenho
+- Use pipelines paralelos para tarefas independentes
+- Reutilize threads de agentes para múltiplas execuções
+- Execução assíncrona em todo o fluxo
 
-## 🔐 Best Practices
+## 🔐 Melhores Práticas
 
-1. ✅ **Single Responsibility** - Each filter does ONE thing well
-2. ✅ **Stateless Filters** - Don't depend on previous runs
-3. ✅ **Clear Instructions** - Be specific with agent instructions
-4. ✅ **Error Handling** - Always check filter status
-5. ✅ **Logging** - Track transformations for debugging
+1. ✅ **Responsabilidade Única** - Cada filtro faz UMA coisa bem
+2. ✅ **Filtros Stateless** - Não dependem de execuções anteriores
+3. ✅ **Instruções Claras** - Seja específico nas instruções do agente
+4. ✅ **Tratamento de Erros** - Sempre verifique o status do filtro
+5. ✅ **Logging** - Rastreie transformações para depuração
 
-## 📈 Monitoring
+## 📈 Monitoramento
 
-Track pipeline health:
-- Execution time per filter
-- Success/failure rates
-- Transformation audit trail
-- Agent performance metrics
+Acompanhe a saúde do pipeline:
+- Tempo de execução por filtro
+- Taxas de sucesso/falha
+- Trilha de auditoria de transformações
+- Métricas de desempenho dos agentes
 
 ```python
-print(f"Transformations: {result.transformations}")
-print(f"Metadata: {result.metadata}")
+print(f"Transformações: {result.transformations}")
+print(f"Metadados: {result.metadata}")
 ```
 
-## 🎬 Coming Up Next!
+## 🎬 O Que Vem Aí!
 
-In the next patterns:
-- **Pattern 3**: Pub/Sub with agent subscribers
-- **Pattern 4**: Command Messages with async pipelines
+Nos próximos padrões:
+- **Padrão 3**: Pub/Sub com assinantes agentes
+- **Padrão 4**: Mensagens de Comando com pipelines assíncronos
 
-## 🙏 Don't Forget!
+## 🙏 Não Esqueça!
 
-- 👍 Like this video
-- 💬 Comment your use cases
-- 📢 Share with your team
-- 🔔 Subscribe for Pattern 3!
+- 👍 Curta este vídeo
+- 💬 Comente seus casos de uso
+- 📢 Compartilhe com sua equipe
+- 🔔 Inscreva-se para o Padrão 3!
 
 ---
 
-**🔗 Resources:**
-- [Pipes and Filters Pattern](https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters.html)
+**🔗 Recursos:**
+- [Padrão Pipes and Filters](https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters.html)
 - [Azure AI Foundry](https://learn.microsoft.com/azure/ai-studio/)
-- [FastAPI Docs](https://fastapi.tiangolo.com/)
+- [Documentação FastAPI](https://fastapi.tiangolo.com/)
 
-**#EnterpriseIntegration #PipesAndFilters #AIAgents #AzureAI #CloudArchitecture**
+**#IntegraçãoEmpresarial #PipesAndFilters #AgentesDeIA #AzureAI #ArquiteturaCloud**

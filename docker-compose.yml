@@ -1,90 +1,90 @@
 version: '3.8'
 
 services:
-  # Pattern 1: Message Queue Monitor and Executor
-  pattern-1-message-queue:
+  # Padrão 1: Message Queue Monitor and Executor
+  message-queue:
     build:
       context: .
-      dockerfile: pattern-1-message-queue/Dockerfile
+      dockerfile: src/services/message_queue/Dockerfile
       target: development
-    container_name: pattern-1-api
+    container_name: service-message-queue
     ports:
       - "8000:8000"
     environment:
-      - PROJECT_CONNECTION_STRING=${PROJECT_CONNECTION_STRING}
+      - AZURE_AI_PROJECT_ENDPOINT=${AZURE_AI_PROJECT_ENDPOINT}
       - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
       - EVENTHUB_NAME=${EVENTHUB_NAME}
       - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
     volumes:
-      - ./pattern-1-message-queue:/app/pattern-1-message-queue
-      - ./shared:/app/shared
+      - ./src/services/message_queue:/app/src/services/message_queue
+      - ./src/shared:/app/src/shared
     networks:
       - integration-network
     restart: unless-stopped
 
-  # Pattern 2: Pipes and Filters with Cognitive Capabilities
-  pattern-2-pipes-filters:
+  # Padrão 2: Pipes and Filters com Capacidades Cognitivas
+  pipes-filters:
     build:
       context: .
-      dockerfile: pattern-2-pipes-filters/Dockerfile
+      dockerfile: src/services/pipes_filters/Dockerfile
       target: development
-    container_name: pattern-2-api
+    container_name: service-pipes-filters
     ports:
       - "8001:8001"
     environment:
-      - PROJECT_CONNECTION_STRING=${PROJECT_CONNECTION_STRING}
+      - AZURE_AI_PROJECT_ENDPOINT=${AZURE_AI_PROJECT_ENDPOINT}
       - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
       - EVENTHUB_NAME=${EVENTHUB_NAME}
       - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
     volumes:
-      - ./pattern-2-pipes-filters:/app/pattern-2-pipes-filters
-      - ./shared:/app/shared
+      - ./src/services/pipes_filters:/app/src/services/pipes_filters
+      - ./src/shared:/app/src/shared
     networks:
       - integration-network
     restart: unless-stopped
 
-  # Pattern 3: Publish/Subscribe with AI Agents
-  pattern-3-pubsub:
+  # Padrão 3: Publish/Subscribe com Agentes de IA
+  pubsub:
     build:
       context: .
-      dockerfile: pattern-3-pubsub/Dockerfile
+      dockerfile: src/services/pubsub/Dockerfile
       target: development
-    container_name: pattern-3-api
+    container_name: service-pubsub
     ports:
       - "8002:8002"
     environment:
-      - PROJECT_CONNECTION_STRING=${PROJECT_CONNECTION_STRING}
+      - AZURE_AI_PROJECT_ENDPOINT=${AZURE_AI_PROJECT_ENDPOINT}
       - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
       - EVENTHUB_NAME=${EVENTHUB_NAME}
       - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
     volumes:
-      - ./pattern-3-pubsub:/app/pattern-3-pubsub
-      - ./shared:/app/shared
+      - ./src/services/pubsub:/app/src/services/pubsub
+      - ./src/shared:/app/src/shared
     networks:
       - integration-network
     restart: unless-stopped
 
-  # Pattern 4: Command Messages with Async Pipelines
-  pattern-4-command-messages:
+  # Padrão 4: Mensagens de Comando com Pipelines Assíncronos
+  command-messages:
     build:
       context: .
-      dockerfile: pattern-4-command-messages/Dockerfile
+      dockerfile: src/services/command_messages/Dockerfile
       target: development
-    container_name: pattern-4-api
+    container_name: service-command-messages
     ports:
       - "8003:8003"
     environment:
-      - PROJECT_CONNECTION_STRING=${PROJECT_CONNECTION_STRING}
+      - AZURE_AI_PROJECT_ENDPOINT=${AZURE_AI_PROJECT_ENDPOINT}
       - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
       - EVENTHUB_NAME=${EVENTHUB_NAME}
       - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
     volumes:
-      - ./pattern-4-command-messages:/app/pattern-4-command-messages
-      - ./shared:/app/shared
+      - ./src/services/command_messages:/app/src/services/command_messages
+      - ./src/shared:/app/src/shared
     networks:
       - integration-network
     restart: unless-stopped
@@ -93,6 +93,6 @@ networks:
   integration-network:
     driver: bridge
 
-# Volumes for persistent data (if needed)
+# Volumes para dados persistentes (se necessário)
 volumes:
   shared-data:

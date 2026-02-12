@@ -21,7 +21,7 @@ fi
 source .env
 
 # Check required environment variables
-required_vars=("PROJECT_CONNECTION_STRING" "EVENTHUB_CONNECTION_STRING" "EVENTHUB_NAME")
+required_vars=("AZURE_AI_PROJECT_ENDPOINT" "EVENTHUB_CONNECTION_STRING" "EVENTHUB_NAME")
 missing_vars=()
 
 for var in "${required_vars[@]}"; do

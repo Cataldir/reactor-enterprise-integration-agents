@@ -3,7 +3,7 @@
 import asyncio
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Callable
 from datetime import datetime
 import uuid
 
@@ -136,7 +136,7 @@ class ProcessingAgent(BaseAgent):
     def __init__(
         self,
         config: AgentConfig,
-        process_func: Optional[callable] = None
+        process_func: Optional[Callable[[AgentMessage], Optional[AgentMessage]]] = None
     ):
         """
         Inicializa o agente de processamento.

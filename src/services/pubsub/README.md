@@ -1,129 +1,118 @@
-# 🎬 Pattern 3: Publish/Subscribe with AI Agents
+# 🎬 Padrão 3: Publish/Subscribe com Agentes de IA
 
-## 📺 YouTube Presentation Style
+## 📺 Estilo de Apresentação YouTube
 
-What's going on, architects! 🎉 Ready for the MOST scalable integration pattern? Today we're building **Pub/Sub with intelligent AI subscribers**!
+E aí, arquitetos! 🎉 Prontos para o padrão de integração MAIS escalável? Hoje vamos construir **Pub/Sub com assinantes inteligentes de IA**!
 
-## 🎯 What's Pub/Sub All About?
+## 🎯 Do Que Se Trata o Pub/Sub?
 
-Imagine a **radio station** 📻:
-- **Publishers** broadcast messages (like radio shows)
-- **Subscribers** tune in to topics they care about
-- **No direct connection** between publishers and subscribers
-- **Everyone gets the message** who's listening!
+Imagine uma **estação de rádio** 📻:
+- **Publicadores** transmitem mensagens (como programas de rádio)
+- **Assinantes** sintonizam nos tópicos que lhes interessam
+- **Sem conexão direta** entre publicadores e assinantes
+- **Todos recebem a mensagem** quem estiver ouvindo!
 
-Now add AI agents as subscribers = **MIND BLOWN** 🤯
+Agora adicione agentes de IA como assinantes = **MENTE EXPLODIDA** 🤯
 
-## 🏗️ Architecture Overview
+## 🏗️ Visão Geral da Arquitetura
 
-```
-                        ┌──────────────────┐
-                        │   Azure Event    │
-    Publishers ────────>│      Hub         │
-                        │   (Message Bus)  │
-                        └────────┬─────────┘
-                                 │
-                    ┌────────────┼────────────┐
-                    │            │            │
-                    ▼            ▼            ▼
-            ┌──────────┐  ┌──────────┐  ┌──────────┐
-            │ Customer │  │  Order   │  │Analytics │
-            │  Agent   │  │  Agent   │  │  Agent   │
-            │          │  │          │  │          │
-            │ Topics:  │  │ Topics:  │  │ Topics:  │
-            │ Customer │  │ Orders   │  │   All    │
-            └──────────┘  └──────────┘  └──────────┘
+```mermaid
+graph TB
+    PUB["Publicadores"] --> EH["Azure Event Hub\n(Barramento)"]
+    EH --> A1["Agente Cliente\nTópicos: Cliente"]
+    EH --> A2["Agente Pedidos\nTópicos: Pedidos"]
+    EH --> A3["Agente Analytics\nTópicos: Todos"]
 ```
 
-## 🔥 The Enterprise Integration Pattern
+## 🔥 O Padrão de Integração Empresarial
 
-**Publish/Subscribe** decouples systems:
+**Publish/Subscribe** desacopla sistemas:
 
-1. **Publishers** - Send events without knowing who receives
-2. **Topics** - Logical channels for different event types
-3. **Subscribers** - Register interest in specific topics
-4. **Event Hub** - Routes messages to interested subscribers
-5. **Parallel Processing** - Multiple agents process simultaneously
+1. **Publicadores** - Enviam eventos sem saber quem recebe
+2. **Tópicos** - Canais lógicos para diferentes tipos de eventos
+3. **Assinantes** - Registram interesse em tópicos específicos
+4. **Event Hub** - Roteia mensagens para assinantes interessados
+5. **Processamento Paralelo** - Múltiplos agentes processam simultaneamente
 
-### Why This Pattern Rocks! 🎸
+### Por Que Este Padrão é Incrível! 🎸
 
-- ✅ **Loose Coupling** - Publishers don't know about subscribers
-- ✅ **Scalability** - Add subscribers without changing publishers
-- ✅ **Flexibility** - Subscribe to multiple topics
-- ✅ **Resilience** - Subscribers can fail independently
-- ✅ **Broadcast** - One message reaches many subscribers
+- ✅ **Acoplamento Fraco** - Publicadores não conhecem os assinantes
+- ✅ **Escalabilidade** - Adicione assinantes sem alterar publicadores
+- ✅ **Flexibilidade** - Assine múltiplos tópicos
+- ✅ **Resiliência** - Assinantes podem falhar independentemente
+- ✅ **Broadcast** - Uma mensagem alcança muitos assinantes
 
-## 🛠️ Technologies Used
+## 🛠️ Tecnologias Utilizadas
 
-- **Azure Event Hub** - Pub/Sub message broker 📬
-- **Azure AI Foundry Agents** - Intelligent subscribers 🤖
-- **Topic-Based Routing** - Smart message delivery 🎯
-- **FastAPI + MCP** - REST API with standardized protocol ⚡
-- **Async Python** - Concurrent message processing 🚀
+- **Azure Event Hub** - Broker de mensagens Pub/Sub 📬
+- **Agentes Azure AI Foundry** - Assinantes inteligentes 🤖
+- **Roteamento Baseado em Tópicos** - Entrega inteligente de mensagens 🎯
+- **FastAPI + MCP** - API REST com protocolo padronizado ⚡
+- **Python Assíncrono** - Processamento concorrente de mensagens 🚀
 
-## 🚀 Quick Start
+## 🚀 Início Rápido
 
-### Prerequisites
+### Pré-requisitos
 
-1. Azure Event Hub configured
-2. Azure AI Foundry project
+1. Azure Event Hub configurado
+2. Projeto Azure AI Foundry
 3. Python 3.11+
 
-### Setup
+### Configuração
 
-1. **Navigate:**
+1. **Navegue:**
 ```bash
-cd pattern-3-pubsub
+cd src/services/pubsub
 ```
 
 2. **Configure:**
 ```bash
 cp ../.env.example .env
-# Add your credentials
+# Adicione suas credenciais
 ```
 
-3. **Install:**
+3. **Instale:**
 ```bash
-pip install -r ../requirements.txt
+uv sync
 ```
 
-### 🏃 Running
+### 🏃 Executando
 
-**Option 1: Demo with Preset Subscribers**
+**Opção 1: Demo com Assinantes Pré-configurados**
 ```bash
 python main.py
 ```
 
-**Option 2: REST API**
+**Opção 2: API REST**
 ```bash
 python api.py
-# OR
+# OU
 uvicorn api:app --port 8002 --reload
 ```
 
 ### 🐳 Docker
 
-**Build:**
+**Construir:**
 ```bash
-# Production
+# Produção
 docker build -t pubsub-agent --target production .
 
-# Development
+# Desenvolvimento
 docker build -t pubsub-agent-dev --target development .
 ```
 
-**Run:**
+**Executar:**
 ```bash
-# Production
+# Produção
 docker run --env-file .env pubsub-agent
 
-# Development
-docker run -p 8002:8002 -v $(pwd):/app/pattern-3-pubsub --env-file .env pubsub-agent-dev
+# Desenvolvimento
+docker run -p 8002:8002 -v $(pwd):/app/src/services/pubsub --env-file .env pubsub-agent-dev
 ```
 
-## 📡 API Endpoints
+## 📡 Endpoints da API
 
-### Publish a Message
+### Publicar uma Mensagem
 ```bash
 POST /publish
 {
@@ -132,64 +121,64 @@ POST /publish
     "event_type": "feedback",
     "customer_id": "C123",
     "rating": 5,
-    "comment": "Excellent service!"
+    "comment": "Excelente serviço!"
   }
 }
 ```
 
-### Create Custom Subscriber
+### Criar Assinante Personalizado
 ```bash
 POST /subscribers/create
 {
-  "name": "Fraud Detection Agent",
+  "name": "Agente de Detecção de Fraude",
   "topics": ["order_events"],
-  "instructions": "Analyze orders for fraud patterns..."
+  "instructions": "Analisar pedidos em busca de padrões de fraude..."
 }
 ```
 
-### Create Preset Subscribers
+### Criar Assinantes Pré-configurados
 ```bash
 POST /subscribers/preset/customer-service
 POST /subscribers/preset/order-processor
 POST /subscribers/preset/analytics
 ```
 
-### List Subscribers
+### Listar Assinantes
 ```bash
 GET /subscribers
 ```
 
-### Start Message Consumers
+### Iniciar Consumidores de Mensagens
 ```bash
 POST /consumers/start
 ```
 
-### List Available Topics
+### Listar Tópicos Disponíveis
 ```bash
 GET /topics
 ```
 
-## 💡 How It Works
+## 💡 Como Funciona
 
-### 1. Topic Definition
-Four topic types available:
-- `customer_events` - Customer interactions
-- `order_events` - Order processing
-- `system_events` - System operations
-- `analytics_events` - Business analytics
+### 1. Definição de Tópicos
+Quatro tipos de tópicos disponíveis:
+- `customer_events` - Interações com clientes
+- `order_events` - Processamento de pedidos
+- `system_events` - Operações do sistema
+- `analytics_events` - Analytics de negócios
 
-### 2. Subscriber Registration
-Agents subscribe to topics they care about:
+### 2. Registro de Assinantes
+Agentes assinam os tópicos que lhes interessam:
 ```python
 subscriber = AgentSubscriber(
-    name="Customer Service",
+    name="Atendimento ao Cliente",
     subscribed_topics=[TopicType.CUSTOMER_EVENTS],
-    processing_instructions="Handle customer issues..."
+    processing_instructions="Tratar problemas de clientes..."
 )
 ```
 
-### 3. Message Publishing
-Publishers send to topics:
+### 3. Publicação de Mensagens
+Publicadores enviam para tópicos:
 ```python
 message = Message(
     topic=TopicType.CUSTOMER_EVENTS,
@@ -198,65 +187,65 @@ message = Message(
 await broker.publish(message)
 ```
 
-### 4. Intelligent Processing
-- Event Hub broadcasts to all subscribers
-- Each agent checks if it's subscribed to the topic
-- Interested agents process in parallel
-- Each provides unique insights from their perspective
+### 4. Processamento Inteligente
+- Event Hub transmite para todos os assinantes
+- Cada agente verifica se está inscrito no tópico
+- Agentes interessados processam em paralelo
+- Cada um fornece insights únicos da sua perspectiva
 
-## 🎓 Key Concepts
+## 🎓 Conceitos-Chave
 
 ### AgentSubscriber
-AI-powered subscriber:
-- **Subscribes** to specific topics
-- **Filters** messages by interest
-- **Processes** using AI cognition
-- **Tracks** metrics
+Assinante alimentado por IA:
+- **Assina** tópicos específicos
+- **Filtra** mensagens por interesse
+- **Processa** usando cognição de IA
+- **Rastreia** métricas
 
 ### PubSubBroker
-Message orchestrator:
-- **Manages** subscriber registry
-- **Routes** messages to Event Hub
-- **Coordinates** parallel processing
-- **Handles** failures gracefully
+Orquestrador de mensagens:
+- **Gerencia** registro de assinantes
+- **Roteia** mensagens para o Event Hub
+- **Coordena** processamento paralelo
+- **Trata** falhas de forma graciosa
 
-### Topic-Based Routing
-Messages flow based on topics:
+### Roteamento Baseado em Tópicos
+Mensagens fluem com base em tópicos:
 ```
-customer_events → Customer Service Agent
-customer_events → Analytics Agent
-order_events    → Order Processing Agent
-order_events    → Analytics Agent
+customer_events → Agente de Atendimento ao Cliente
+customer_events → Agente de Analytics
+order_events    → Agente de Processamento de Pedidos
+order_events    → Agente de Analytics
 ```
 
-## 📊 Real-World Use Cases
+## 📊 Casos de Uso do Mundo Real
 
-Perfect for:
+Perfeito para:
 
-1. 🎫 **Event-Driven Architecture**
-   - Microservices communicate via events
-   - Each service is a subscriber
+1. 🎫 **Arquitetura Orientada a Eventos**
+   - Microsserviços se comunicam via eventos
+   - Cada serviço é um assinante
 
-2. 📊 **Real-Time Analytics**
-   - Analytics agents subscribe to all topics
-   - Process events for insights
+2. 📊 **Analytics em Tempo Real**
+   - Agentes de analytics assinam todos os tópicos
+   - Processam eventos para gerar insights
 
-3. 🔔 **Notification Systems**
-   - Different agents for email, SMS, push
-   - Subscribe to relevant events
+3. 🔔 **Sistemas de Notificação**
+   - Diferentes agentes para e-mail, SMS, push
+   - Assinam eventos relevantes
 
-4. 🛡️ **Security Monitoring**
-   - Security agents subscribe to all topics
-   - Detect threats in real-time
+4. 🛡️ **Monitoramento de Segurança**
+   - Agentes de segurança assinam todos os tópicos
+   - Detectam ameaças em tempo real
 
-5. 🔄 **Data Synchronization**
-   - Multiple databases as subscribers
-   - Stay in sync automatically
+5. 🔄 **Sincronização de Dados**
+   - Múltiplos bancos de dados como assinantes
+   - Mantêm-se sincronizados automaticamente
 
-## 🎯 Advanced Features
+## 🎯 Funcionalidades Avançadas
 
-### Multi-Topic Subscription
-One agent, multiple topics:
+### Assinatura de Múltiplos Tópicos
+Um agente, múltiplos tópicos:
 ```python
 analytics_agent.subscribed_topics = [
     TopicType.CUSTOMER_EVENTS,
@@ -265,34 +254,34 @@ analytics_agent.subscribed_topics = [
 ]
 ```
 
-### Parallel Processing
-Multiple agents process same message:
-- Customer Service analyzes customer sentiment
-- Analytics extracts metrics
-- Fraud Detection checks for anomalies
+### Processamento Paralelo
+Múltiplos agentes processam a mesma mensagem:
+- Atendimento ao Cliente analisa sentimento
+- Analytics extrai métricas
+- Detecção de Fraude verifica anomalias
 
-All simultaneously! ⚡
+Tudo simultaneamente! ⚡
 
-### Dynamic Subscriber Management
-- Add subscribers at runtime
-- Remove subscribers without affecting others
-- Update subscriptions dynamically
+### Gerenciamento Dinâmico de Assinantes
+- Adicione assinantes em tempo de execução
+- Remova assinantes sem afetar os demais
+- Atualize assinaturas dinamicamente
 
-## 🔐 Best Practices
+## 🔐 Melhores Práticas
 
-1. ✅ **Topic Design** - Clear, logical topic hierarchy
-2. ✅ **Idempotency** - Subscribers handle duplicates
-3. ✅ **Error Handling** - One subscriber failure doesn't affect others
-4. ✅ **Message Schema** - Consistent message format
-5. ✅ **Monitoring** - Track subscriber health and performance
+1. ✅ **Design de Tópicos** - Hierarquia clara e lógica de tópicos
+2. ✅ **Idempotência** - Assinantes tratam duplicatas
+3. ✅ **Tratamento de Erros** - Falha de um assinante não afeta os outros
+4. ✅ **Esquema de Mensagens** - Formato consistente de mensagens
+5. ✅ **Monitoramento** - Rastreie saúde e desempenho dos assinantes
 
-## 📈 Monitoring & Metrics
+## 📈 Monitoramento e Métricas
 
-Track important metrics:
-- Messages published per topic
-- Subscriber processing time
-- Success/failure rates
-- Message throughput
+Rastreie métricas importantes:
+- Mensagens publicadas por tópico
+- Tempo de processamento dos assinantes
+- Taxas de sucesso/falha
+- Throughput de mensagens
 
 ```python
 subscriber_info = {
@@ -302,33 +291,33 @@ subscriber_info = {
 }
 ```
 
-## 🆚 Pub/Sub vs Other Patterns
+## 🆚 Pub/Sub vs Outros Padrões
 
-| Pattern | Coupling | Scalability | Use Case |
-|---------|----------|-------------|----------|
-| **Pub/Sub** | Loose | High | Event broadcasting |
-| **Queue** | Tight | Medium | Task distribution |
-| **Pipes** | Medium | Medium | Sequential processing |
+| Padrão | Acoplamento | Escalabilidade | Caso de Uso |
+|--------|-------------|----------------|-------------|
+| **Pub/Sub** | Fraco | Alta | Broadcast de eventos |
+| **Fila** | Forte | Média | Distribuição de tarefas |
+| **Pipes** | Médio | Média | Processamento sequencial |
 
-## 🎬 What's Coming!
+## 🎬 O Que Vem Aí!
 
-Next up:
-- **Pattern 4**: Command Messages with async pipelines
-- Complete architecture documentation
-- Docker Compose for all patterns
+Próximo:
+- **Padrão 4**: Mensagens de Comando com pipelines assíncronos
+- Documentação completa de arquitetura
+- Docker Compose para todos os padrões
 
-## 🙏 Before You Go!
+## 🙏 Antes de Ir!
 
-- 👍 Like if you learned something new
-- 💬 Comment your Pub/Sub use cases
-- 📢 Share with your team
-- 🔔 Subscribe for Pattern 4!
+- 👍 Curta se aprendeu algo novo
+- 💬 Comente seus casos de uso de Pub/Sub
+- 📢 Compartilhe com sua equipe
+- 🔔 Inscreva-se para o Padrão 4!
 
 ---
 
-**🔗 Resources:**
-- [Pub/Sub Pattern](https://www.enterpriseintegrationpatterns.com/patterns/messaging/PublishSubscribeChannel.html)
+**🔗 Recursos:**
+- [Padrão Pub/Sub](https://www.enterpriseintegrationpatterns.com/patterns/messaging/PublishSubscribeChannel.html)
 - [Azure Event Hubs](https://learn.microsoft.com/azure/event-hubs/)
 - [Azure AI Foundry](https://learn.microsoft.com/azure/ai-studio/)
 
-**#PubSub #EventDriven #AzureEventHub #AIAgents #Microservices #CloudArchitecture**
+**#PubSub #OrientadoAEventos #AzureEventHub #AgentesDeIA #Microsserviços #ArquiteturaCloud**

@@ -44,7 +44,7 @@ Para sugerir novas funcionalidades ou melhorias:
 
 1. **Instale dependências de desenvolvimento:**
    ```bash
-   pip install -e ".[dev]"
+   uv sync
    ```
 
 2. **Mantenha o código consistente:**

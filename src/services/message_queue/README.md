@@ -1,234 +1,229 @@
-# 🎬 Pattern 1: Message Queue Monitor and Executor with AI Agents
+# 🎬 Padrão 1: Monitor e Executor de Fila de Mensagens com Agentes de IA
 
-## 📺 YouTube Presentation Style
+## 📺 Estilo de Apresentação YouTube
 
-Hey everyone! 👋 Welcome back to the channel! Today we're diving into something REALLY exciting - **intelligent message queue processing using Azure AI Foundry Agents**!
+E aí, pessoal! 👋 Bem-vindos de volta ao canal! Hoje vamos mergulhar em algo MUITO empolgante - **processamento inteligente de filas de mensagens usando Agentes do Azure AI Foundry**!
 
-## 🎯 What Are We Building?
+## 🎯 O Que Estamos Construindo?
 
-Imagine having an AI agent that can **intelligently monitor and process** your message queues. No more dumb consumers! We're talking about agents that can:
-- 🧠 **Understand** the context of each message
-- 🎯 **Analyze** the task requirements
-- 🚀 **Recommend** optimal processing strategies
-- ⚠️ **Identify** potential issues before they happen
+Imagine ter um agente de IA que pode **monitorar e processar de forma inteligente** suas filas de mensagens. Chega de consumidores burros! Estamos falando de agentes que podem:
 
-## 🏗️ Architecture Overview
+- 🧠 **Compreender** o contexto de cada mensagem
+- 🎯 **Analisar** os requisitos da tarefa
+- 🚀 **Recomendar** estratégias de processamento ideais
+- ⚠️ **Identificar** problemas potenciais antes que aconteçam
 
-```
-┌─────────────────┐         ┌──────────────────┐         ┌─────────────────┐
-│  Event Producer │────────>│  Azure Event Hub │────────>│   AI Agent      │
-│  (Your Apps)    │         │  (Message Queue) │         │   Monitor       │
-└─────────────────┘         └──────────────────┘         └─────────────────┘
-                                                                    │
-                                                                    ▼
-                                                          ┌─────────────────┐
-                                                          │  Intelligent    │
-                                                          │  Processing     │
-                                                          └─────────────────┘
+## 🏗️ Visão Geral da Arquitetura
+
+```mermaid
+graph LR
+    P["Produtor de\nEventos"] --> EH["Azure Event Hub\n(Fila de Msg)"]
+    EH --> AI["Agente de IA\nMonitor"]
+    AI --> PROC["Processamento\nInteligente"]
 ```
 
-## 🔥 The Enterprise Integration Pattern
+## 🔥 O Padrão de Integração Empresarial
 
-This implements the **Message Queue Pattern** with a cognitive twist:
+Isso implementa o **Padrão de Fila de Mensagens** com um toque cognitivo:
 
-1. **Producer** sends messages to Azure Event Hub
-2. **AI Agent** monitors the queue continuously
-3. **Intelligent Processing** - Agent analyzes each message using Azure AI Foundry
-4. **Action Execution** - Based on agent's recommendations
-5. **Feedback Loop** - Results logged and monitored
+1. **Produtor** envia mensagens para o Azure Event Hub
+2. **Agente de IA** monitora a fila continuamente
+3. **Processamento Inteligente** - O agente analisa cada mensagem usando o Azure AI Foundry
+4. **Execução de Ações** - Com base nas recomendações do agente
+5. **Loop de Feedback** - Resultados registrados e monitorados
 
-## 🛠️ Technologies Used
+## 🛠️ Tecnologias Utilizadas
 
-- **Azure AI Foundry** (v2 SDK) - The brain of our system! 🧠
-- **Azure Event Hub** - Enterprise-grade message queue 📬
-- **FastAPI** - Lightning-fast REST API ⚡
-- **MCP Layer** - Model Context Protocol for standardized communication 🔗
-- **Python 3.11+** - Modern, async Python 🐍
+- **Azure AI Foundry** (SDK v2) - O cérebro do nosso sistema! 🧠
+- **Azure Event Hub** - Fila de mensagens de nível empresarial 📬
+- **FastAPI** - API REST ultrarrápida ⚡
+- **Camada MCP** - Model Context Protocol para comunicação padronizada 🔗
+- **Python 3.11+** - Python moderno e assíncrono 🐍
 
-## 🚀 Quick Start
+## 🚀 Início Rápido
 
-### Prerequisites
+### Pré-requisitos
 
-1. Azure AI Foundry project
-2. Azure Event Hub namespace and hub
+1. Projeto Azure AI Foundry
+2. Namespace e hub do Azure Event Hub
 3. Python 3.11+
 
-### Setup
+### Configuração
 
-1. **Clone and navigate:**
+1. **Clone e navegue:**
 ```bash
-cd pattern-1-message-queue
+cd src/services/message_queue
 ```
 
-2. **Configure environment:**
+2. **Configure o ambiente:**
 ```bash
 cp ../.env.example .env
-# Edit .env with your Azure credentials
+# Edite o .env com suas credenciais do Azure
 ```
 
-3. **Install dependencies:**
+3. **Instale as dependências:**
 ```bash
-pip install -r ../requirements.txt
+uv sync
 ```
 
-### 🏃 Running the Application
+### 🏃 Executando a Aplicação
 
-**Option 1: Direct Monitoring (Console)**
+**Opção 1: Monitoramento Direto (Console)**
 ```bash
 python main.py
 ```
 
-**Option 2: REST API Mode**
+**Opção 2: Modo API REST**
 ```bash
 python api.py
-# OR
+# OU
 uvicorn api:app --reload
 ```
 
-### 🐳 Using Docker
+### 🐳 Usando Docker
 
-**Build and run:**
+**Construir e executar:**
 ```bash
-# Production mode
+# Modo produção
 docker build -t message-queue-agent --target production .
 docker run --env-file .env message-queue-agent
 
-# Development mode with hot reload
+# Modo desenvolvimento com hot reload
 docker build -t message-queue-agent-dev --target development .
-docker run -p 8000:8000 -v $(pwd):/app/pattern-1-message-queue --env-file .env message-queue-agent-dev
+docker run -p 8000:8000 -v $(pwd):/app/src/services/message_queue --env-file .env message-queue-agent-dev
 ```
 
-## 📡 API Endpoints
+## 📡 Endpoints da API
 
-### Send Message to Queue
-```bash
+### Enviar Mensagem para a Fila
+```
 POST /queue/send
 {
-  "task": "Process customer order",
+  "task": "Processar pedido do cliente",
   "data": {
     "order_id": "12345",
-    "customer": "John Doe",
+    "customer": "João Silva",
     "items": ["item1", "item2"]
   },
   "priority": 1
 }
 ```
 
-### Start Agent Monitor
-```bash
+### Iniciar Monitor do Agente
+```
 POST /agent/start
 ```
 
-### Check Agent Status
+### Verificar Status do Agente
 ```bash
 GET /agent/status
 ```
 
-### Health Check
+### Verificação de Saúde
 ```bash
 GET /health
 ```
 
-## 💡 How It Works
+## 💡 Como Funciona
 
-### 1. Message Production
-Messages are sent to Azure Event Hub with task description and data:
+### 1. Produção de Mensagens
+As mensagens são enviadas ao Azure Event Hub com descrição da tarefa e dados:
 
 ```python
 {
-  "task": "Analyze customer sentiment",
+  "task": "Analisar sentimento do cliente",
   "data": {
     "customer_id": "C123",
-    "feedback": "Great service!"
+    "feedback": "Ótimo serviço!"
   }
 }
 ```
 
-### 2. AI Agent Processing
-The agent:
-1. Receives the message
-2. Creates a cognitive prompt
-3. Uses Azure AI Foundry to analyze
-4. Returns structured recommendations
+### 2. Processamento do Agente de IA
+O agente:
+1. Recebe a mensagem
+2. Cria um prompt cognitivo
+3. Usa o Azure AI Foundry para analisar
+4. Retorna recomendações estruturadas
 
-### 3. Intelligent Analysis
-The agent provides:
-- Task understanding
-- Processing recommendations
-- Risk identification
-- Expected outcomes
+### 3. Análise Inteligente
+O agente fornece:
+- Compreensão da tarefa
+- Recomendações de processamento
+- Identificação de riscos
+- Resultados esperados
 
-## 🎓 Key Concepts
+## 🎓 Conceitos-Chave
 
-### MCP Integration
-Uses **Model Context Protocol** to standardize communication between:
-- Message brokers (Event Hub)
-- AI agents (Azure AI Foundry)
-- Application layer (FastAPI)
+### Integração MCP
+Usa o **Model Context Protocol** para padronizar a comunicação entre:
+- Brokers de mensagens (Event Hub)
+- Agentes de IA (Azure AI Foundry)
+- Camada de aplicação (FastAPI)
 
-### Asynchronous Processing
-Everything runs async for maximum throughput:
+### Processamento Assíncrono
+Tudo roda de forma assíncrona para máximo throughput:
 ```python
 async def process_message(event: EventData) -> Dict[str, Any]:
-    # Non-blocking message processing
+    # Processamento de mensagem não-bloqueante
     result = await agent.analyze(event)
     return result
 ```
 
-## 📊 Use Cases
+## 📊 Casos de Uso
 
-Perfect for:
-- 📝 **Document Processing** - Intelligent routing and analysis
-- 🛒 **Order Management** - Smart order validation and processing
-- 📧 **Email Triage** - Automated categorization and response
-- 🔍 **Log Analysis** - Intelligent error detection
-- 🎫 **Support Tickets** - Automated ticket classification
+Perfeito para:
+- 📝 **Processamento de Documentos** - Roteamento e análise inteligente
+- 🛒 **Gestão de Pedidos** - Validação e processamento inteligente de pedidos
+- 📧 **Triagem de E-mails** - Categorização e resposta automatizada
+- 🔍 **Análise de Logs** - Detecção inteligente de erros
+- 🎫 **Tickets de Suporte** - Classificação automatizada de tickets
 
-## 🔐 Security Best Practices
+## 🔐 Melhores Práticas de Segurança
 
-- ✅ Use Azure Managed Identity when possible
-- ✅ Store credentials in Azure Key Vault
-- ✅ Never commit `.env` files
-- ✅ Use network isolation for Event Hub
-- ✅ Enable monitoring and alerts
+- ✅ Use Azure Managed Identity sempre que possível
+- ✅ Armazene credenciais no Azure Key Vault
+- ✅ Nunca faça commit de arquivos `.env`
+- ✅ Use isolamento de rede para o Event Hub
+- ✅ Habilite monitoramento e alertas
 
-## 📈 Monitoring and Observability
+## 📈 Monitoramento e Observabilidade
 
-The system logs:
-- Message processing status
-- Agent responses
-- Error conditions
-- Performance metrics
+O sistema registra:
+- Status do processamento de mensagens
+- Respostas do agente
+- Condições de erro
+- Métricas de desempenho
 
-Check logs:
+Verificar logs:
 ```bash
-# In console mode
+# No modo console
 python main.py
 
-# In API mode
+# No modo API
 tail -f uvicorn.log
 ```
 
-## 🎬 What's Next?
+## 🎬 Próximos Passos
 
-In the next patterns, we'll explore:
-- **Pattern 2**: Pipes and Filters with cognitive capabilities
-- **Pattern 3**: Pub/Sub with multiple agents
-- **Pattern 4**: Command Messages in async pipelines
+Nos próximos padrões, vamos explorar:
+- **Padrão 2**: Pipes e Filtros com capacidades cognitivas
+- **Padrão 3**: Pub/Sub com múltiplos agentes
+- **Padrão 4**: Mensagens de Comando em pipelines assíncronos
 
-## 🙏 Thanks for Watching!
+## 🙏 Obrigado por Assistir!
 
-If you found this helpful:
-- 👍 Give it a like
-- 📢 Share with your team
-- 💬 Comment with questions
-- 🔔 Subscribe for more enterprise AI patterns!
+Se você achou útil:
+- 👍 Deixe um like
+- 📢 Compartilhe com sua equipe
+- 💬 Comente com suas dúvidas
+- 🔔 Inscreva-se para mais padrões de IA empresarial!
 
 ---
 
 **🔗 Links:**
-- [Azure AI Foundry Docs](https://learn.microsoft.com/azure/ai-studio/)
-- [Azure Event Hub Docs](https://learn.microsoft.com/azure/event-hubs/)
-- [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/)
+- [Documentação do Azure AI Foundry](https://learn.microsoft.com/azure/ai-studio/)
+- [Documentação do Azure Event Hub](https://learn.microsoft.com/azure/event-hubs/)
+- [Padrões de Integração Empresarial](https://www.enterpriseintegrationpatterns.com/)
 
-**#AzureAI #EnterpriseIntegration #AIAgents #Python #CloudComputing**
+**#AzureAI #IntegraçãoEmpresarial #AgentesDeIA #Python #CloudComputing**

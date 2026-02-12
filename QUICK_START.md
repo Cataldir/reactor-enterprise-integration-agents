@@ -1,77 +1,77 @@
-# 🚀 Quick Reference Guide
+# 🚀 Guia de Referência Rápida
 
-## Getting Started in 5 Minutes
+## Começando em 5 Minutos
 
-### Step 1: Clone & Configure (2 min)
+### Passo 1: Clonar e Configurar (2 min)
 ```bash
 git clone https://github.com/Cataldir/reactor-enterprise-integration-agents.git
 cd reactor-enterprise-integration-agents
 cp .env.example .env
-# Edit .env with your Azure credentials
+# Edite o .env com suas credenciais Azure
 ```
 
-### Step 2: Start All Patterns (2 min)
+### Passo 2: Iniciar Todos os Padrões (2 min)
 ```bash
 ./start.sh up
 ```
 
-### Step 3: Try the APIs (1 min)
-Visit these URLs in your browser:
-- Pattern 1: http://localhost:8000/docs
-- Pattern 2: http://localhost:8001/docs
-- Pattern 3: http://localhost:8002/docs
-- Pattern 4: http://localhost:8003/docs
+### Passo 3: Testar as APIs (1 min)
+Acesse estas URLs no seu navegador:
+- Padrão 1: http://localhost:8000/docs
+- Padrão 2: http://localhost:8001/docs
+- Padrão 3: http://localhost:8002/docs
+- Padrão 4: http://localhost:8003/docs
 
 ---
 
-## 📡 API Quick Reference
+## 📡 Referência Rápida da API
 
-### Pattern 1: Message Queue (Port 8000)
+### Padrão 1: Fila de Mensagens (Porta 8000)
 
-**Submit Task to Queue:**
+**Enviar Tarefa para a Fila:**
 ```bash
 curl -X POST "http://localhost:8000/queue/send" \
   -H "Content-Type: application/json" \
   -d '{
-    "task": "Process customer order",
+    "task": "Processar pedido do cliente",
     "data": {"order_id": "12345"},
     "priority": 1
   }'
 ```
 
-**Start Agent Monitor:**
+**Iniciar Monitor do Agente:**
 ```bash
 curl -X POST "http://localhost:8000/agent/start"
 ```
 
-### Pattern 2: Pipes & Filters (Port 8001)
+### Padrão 2: Pipes e Filtros (Porta 8001)
 
-**Execute Text Analysis Pipeline:**
+**Executar Pipeline de Análise de Texto:**
 ```bash
 curl -X POST "http://localhost:8001/pipeline/preset/text-analysis" \
   -H "Content-Type: application/json" \
-  -d '"Your text to analyze here"'
+  -d '"Seu texto para análise aqui"'
 ```
 
-**Custom Pipeline:**
+**Pipeline Personalizado:**
 ```bash
 curl -X POST "http://localhost:8001/pipeline/execute" \
   -H "Content-Type: application/json" \
   -d '{
-    "input_data": "Your data",
+    "input_data": "Seus dados",
     "filters": [
       {
-        "name": "Filter 1",
-        "instructions": "Process this..."
+        "name": "Filtro 1",
+        "instructions": "Processar isto..."
       }
     ],
     "parallel": false
   }'
 ```
 
-### Pattern 3: Pub/Sub (Port 8002)
+### Padrão 3: Pub/Sub (Porta 8002)
 
-**Publish Message:**
+**Publicar Mensagem:**
 ```bash
 curl -X POST "http://localhost:8002/publish" \
   -H "Content-Type: application/json" \
@@ -85,19 +85,19 @@ curl -X POST "http://localhost:8002/publish" \
   }'
 ```
 
-**Create Subscriber:**
+**Criar Assinante:**
 ```bash
 curl -X POST "http://localhost:8002/subscribers/preset/customer-service"
 ```
 
-**Start Consumers:**
+**Iniciar Consumidores:**
 ```bash
 curl -X POST "http://localhost:8002/consumers/start"
 ```
 
-### Pattern 4: Command Messages (Port 8003)
+### Padrão 4: Mensagens de Comando (Porta 8003)
 
-**Submit Command:**
+**Enviar Comando:**
 ```bash
 curl -X POST "http://localhost:8003/commands/submit" \
   -H "Content-Type: application/json" \
@@ -110,186 +110,189 @@ curl -X POST "http://localhost:8003/commands/submit" \
   }'
 ```
 
-**Check Status:**
+**Verificar Status:**
 ```bash
 curl "http://localhost:8003/commands/{command_id}"
 ```
 
-**Create Processor:**
+**Criar Processador:**
 ```bash
 curl -X POST "http://localhost:8003/processors/preset/data-processor"
 ```
 
-**Start Pipeline:**
+**Iniciar Pipeline:**
 ```bash
 curl -X POST "http://localhost:8003/pipeline/start"
 ```
 
 ---
 
-## 🐳 Docker Commands
+## 🐳 Comandos Docker
 
-### All Patterns
+### Todos os Padrões
 ```bash
-./start.sh up       # Start all
-./start.sh down     # Stop all
-./start.sh logs     # View logs
-./start.sh status   # Check status
-./start.sh restart  # Restart all
-./start.sh clean    # Clean up everything
+./start.sh up       # Iniciar todos
+./start.sh down     # Parar todos
+./start.sh logs     # Visualizar logs
+./start.sh status   # Verificar status
+./start.sh restart  # Reiniciar todos
+./start.sh clean    # Limpar tudo
 ```
 
-### Individual Pattern
+### Padrão Individual
 ```bash
-# Build
-cd pattern-1-message-queue
-docker build -t pattern-1 --target production .
+# Construir
+docker build -t service-message-queue --target production -f src/services/message_queue/Dockerfile .
 
-# Run
-docker run --env-file ../.env -p 8000:8000 pattern-1
+# Executar
+docker run --env-file .env -p 8000:8000 service-message-queue
 
-# Development mode
-docker build -t pattern-1-dev --target development .
-docker run --env-file ../.env -p 8000:8000 -v $(pwd):/app/pattern-1-message-queue pattern-1-dev
+# Modo desenvolvimento
+docker build -t service-message-queue-dev --target development -f src/services/message_queue/Dockerfile .
+docker run --env-file .env -p 8000:8000 -v $(pwd)/src/services/message_queue:/app/src/services/message_queue service-message-queue-dev
 ```
 
 ---
 
-## 🔧 Environment Variables
+## 🔧 Variáveis de Ambiente
 
-Required in `.env`:
+Necessárias no `.env`:
 ```bash
 # Azure AI Foundry
-PROJECT_CONNECTION_STRING=your_connection_string
+AZURE_AI_PROJECT_ENDPOINT=https://<resource>.services.ai.azure.com/api/projects/<project>
 
 # Azure Event Hub
-EVENTHUB_CONNECTION_STRING=your_eventhub_connection
-EVENTHUB_NAME=your_hub_name
+EVENTHUB_CONNECTION_STRING=sua_conexao_eventhub
+EVENTHUB_NAME=nome_do_seu_hub
 
-# Optional
+# Opcional
 MODEL_DEPLOYMENT_NAME=gpt-4
 LOG_LEVEL=INFO
 ```
 
 ---
 
-## 📂 Project Structure
+## 📂 Estrutura do Projeto
 
 ```
 reactor-enterprise-integration-agents/
-├── shared/                    # Shared utilities
-│   ├── mcp/                  # MCP integration layer
-│   └── utils/                # Common utilities
-├── pattern-1-message-queue/   # Queue pattern
-├── pattern-2-pipes-filters/   # Pipeline pattern
-├── pattern-3-pubsub/         # Pub/Sub pattern
-├── pattern-4-command-messages/ # Command pattern
-├── docker-compose.yml        # All patterns orchestration
-├── start.sh                  # Startup script
-└── requirements.txt          # Dependencies
+├── src/                       # Código-fonte principal
+│   ├── agents/               # Classes base de agentes
+│   ├── shared/               # Utilitários compartilhados
+│   │   ├── mcp/             # Camada de integração MCP
+│   │   └── utils/           # Utilitários comuns
+│   ├── patterns/             # Implementações dos padrões
+│   └── services/             # Serviços FastAPI
+│       ├── message_queue/   # Padrão de fila
+│       ├── pipes_filters/   # Padrão de pipeline
+│       ├── pubsub/          # Padrão Pub/Sub
+│       └── command_messages/ # Padrão de comando
+├── docker-compose.yml        # Orquestração de todos os padrões
+├── start.sh                  # Script de inicialização
+└── pyproject.toml            # Configuração e dependências
 ```
 
 ---
 
-## 🎯 Use Case Selection
+## 🎯 Seleção de Caso de Uso
 
-**Choose Pattern 1 (Queue)** when:
-- Background job processing
-- Task distribution
-- Work queue management
+**Escolha o Padrão 1 (Fila)** quando:
+- Processamento de jobs em segundo plano
+- Distribuição de tarefas
+- Gerenciamento de filas de trabalho
 
-**Choose Pattern 2 (Pipes & Filters)** when:
-- Data transformation pipelines
-- Multi-stage processing
-- ETL operations
+**Escolha o Padrão 2 (Pipes e Filtros)** quando:
+- Pipelines de transformação de dados
+- Processamento em múltiplas etapas
+- Operações ETL
 
-**Choose Pattern 3 (Pub/Sub)** when:
-- Event-driven architecture
-- Multiple consumers per event
-- Real-time notifications
+**Escolha o Padrão 3 (Pub/Sub)** quando:
+- Arquitetura orientada a eventos
+- Múltiplos consumidores por evento
+- Notificações em tempo real
 
-**Choose Pattern 4 (Commands)** when:
-- Long-running operations
-- Status tracking needed
-- Request/reply pattern
+**Escolha o Padrão 4 (Comandos)** quando:
+- Operações de longa duração
+- Necessidade de rastreamento de status
+- Padrão requisição/resposta
 
 ---
 
-## 🐛 Troubleshooting
+## 🐛 Resolução de Problemas
 
-### Connection Issues
+### Problemas de Conexão
 ```bash
-# Check Azure credentials
-echo $PROJECT_CONNECTION_STRING
+# Verificar credenciais do Azure
+echo $AZURE_AI_PROJECT_ENDPOINT
 echo $EVENTHUB_CONNECTION_STRING
 
-# Test Event Hub connectivity
-# (Use Azure Portal to verify hub exists)
+# Testar conectividade do Event Hub
+# (Use o Portal Azure para verificar se o hub existe)
 ```
 
-### Docker Issues
+### Problemas com Docker
 ```bash
-# Clean Docker environment
+# Limpar ambiente Docker
 ./start.sh clean
 
-# Rebuild from scratch
+# Reconstruir do zero
 docker-compose build --no-cache
 ./start.sh up
 ```
 
-### Port Conflicts
+### Conflitos de Porta
 ```bash
-# Check what's using the ports
+# Verificar o que está usando as portas
 lsof -i :8000
 lsof -i :8001
 lsof -i :8002
 lsof -i :8003
 
-# Change ports in docker-compose.yml if needed
+# Altere as portas no docker-compose.yml se necessário
 ```
 
-### Agent Issues
+### Problemas com Agentes
 ```bash
-# Check agent creation
-# Look for "Created agent" in logs
+# Verificar criação do agente
+# Procure por "Created agent" nos logs
 ./start.sh logs | grep "Created agent"
 
-# Verify Azure AI Foundry quota
-# Check Azure Portal for deployment limits
+# Verificar cotas do Azure AI Foundry
+# Verifique os limites de implantação no Portal Azure
 ```
 
 ---
 
-## 📚 Learn More
+## 📚 Saiba Mais
 
-- [Main README](README.md) - Project overview
-- [Architecture](ARCHITECTURE.md) - Detailed architecture
-- [Implementation Summary](IMPLEMENTATION_SUMMARY.md) - Complete details
-- [Pattern 1 Guide](pattern-1-message-queue/README.md)
-- [Pattern 2 Guide](pattern-2-pipes-filters/README.md)
-- [Pattern 3 Guide](pattern-3-pubsub/README.md)
-- [Pattern 4 Guide](pattern-4-command-messages/README.md)
-
----
-
-## 💡 Quick Tips
-
-1. **Start Simple:** Try Pattern 1 first
-2. **Check Logs:** Use `./start.sh logs` frequently
-3. **Use Swagger:** Visit `/docs` on each port
-4. **Monitor Azure:** Watch Event Hub metrics in portal
-5. **Scale:** Add replicas in docker-compose.yml
+- [README Principal](README.md) - Visão geral do projeto
+- [Arquitetura](ARCHITECTURE.md) - Arquitetura detalhada
+- [Resumo da Implementação](IMPLEMENTATION_SUMMARY.md) - Detalhes completos
+- [Guia do Padrão 1](src/services/message_queue/README.md)
+- [Guia do Padrão 2](src/services/pipes_filters/README.md)
+- [Guia do Padrão 3](src/services/pubsub/README.md)
+- [Guia do Padrão 4](src/services/command_messages/README.md)
 
 ---
 
-## 🆘 Getting Help
+## 💡 Dicas Rápidas
 
-1. Check the documentation in each pattern's README
-2. Review logs: `./start.sh logs`
-3. Validate environment: `cat .env`
-4. Check Azure portal for service health
-5. Open an issue on GitHub
+1. **Comece simples:** Experimente o Padrão 1 primeiro
+2. **Verifique os logs:** Use `./start.sh logs` frequentemente
+3. **Use o Swagger:** Acesse `/docs` em cada porta
+4. **Monitore o Azure:** Observe as métricas do Event Hub no portal
+5. **Escale:** Adicione réplicas no docker-compose.yml
 
 ---
 
-**Happy Integrating! 🚀**
+## 🆘 Precisa de Ajuda?
+
+1. Consulte a documentação no README de cada padrão
+2. Revise os logs: `./start.sh logs`
+3. Valide o ambiente: `cat .env`
+4. Verifique a saúde dos serviços no portal Azure
+5. Abra uma issue no GitHub
+
+---
+
+**Boas Integrações! 🚀**

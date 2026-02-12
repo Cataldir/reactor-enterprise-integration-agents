@@ -6,7 +6,7 @@ import os
 from typing import Optional
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from azure.ai.projects import AIProjectClient
-from azure.ai.projects.models import AgentStreamEvent
+from azure.ai.agents.models import AgentStreamEvent
 import logging
 
 logger = logging.getLogger(__name__)
@@ -16,35 +16,20 @@ def get_project_client() -> AIProjectClient:
     """
     Create and return an Azure AI Project client.
     
-    Requires environment variables:
-    - PROJECT_CONNECTION_STRING or
-    - AZURE_AI_PROJECT_NAME, AZURE_RESOURCE_GROUP, AZURE_SUBSCRIPTION_ID
+    Requires environment variable:
+    - AZURE_AI_PROJECT_ENDPOINT (e.g. https://<resource>.services.ai.azure.com/api/projects/<project>)
     """
-    connection_string = os.getenv("PROJECT_CONNECTION_STRING")
+    endpoint = os.getenv("AZURE_AI_PROJECT_ENDPOINT")
     
-    if connection_string:
-        return AIProjectClient.from_connection_string(
-            credential=DefaultAzureCredential(),
-            conn_str=connection_string,
-        )
-    
-    # Alternative: construct from individual components
-    project_name = os.getenv("AZURE_AI_PROJECT_NAME")
-    resource_group = os.getenv("AZURE_RESOURCE_GROUP")
-    subscription_id = os.getenv("AZURE_SUBSCRIPTION_ID")
-    
-    if not all([project_name, resource_group, subscription_id]):
+    if not endpoint:
         raise ValueError(
-            "Either PROJECT_CONNECTION_STRING or all of "
-            "(AZURE_AI_PROJECT_NAME, AZURE_RESOURCE_GROUP, AZURE_SUBSCRIPTION_ID) "
-            "must be set"
+            "AZURE_AI_PROJECT_ENDPOINT must be set "
+            "(e.g. https://<resource>.services.ai.azure.com/api/projects/<project>)"
         )
     
     return AIProjectClient(
+        endpoint=endpoint,
         credential=DefaultAzureCredential(),
-        subscription_id=subscription_id,
-        resource_group_name=resource_group,
-        project_name=project_name,
     )
 
 
@@ -54,7 +39,7 @@ def load_env_config() -> dict:
     load_dotenv()
     
     return {
-        "project_connection_string": os.getenv("PROJECT_CONNECTION_STRING"),
+        "azure_ai_project_endpoint": os.getenv("AZURE_AI_PROJECT_ENDPOINT"),
         "eventhub_connection_string": os.getenv("EVENTHUB_CONNECTION_STRING"),
         "eventhub_name": os.getenv("EVENTHUB_NAME"),
         "azure_openai_endpoint": os.getenv("AZURE_OPENAI_ENDPOINT"),

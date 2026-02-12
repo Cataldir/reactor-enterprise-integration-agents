@@ -1,5 +1,8 @@
 # Base Python image
-FROM python:3.11-slim as base
+FROM python:3.11-slim AS base
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Set working directory
 WORKDIR /app
@@ -10,25 +13,25 @@ RUN apt-get update && apt-get install -y \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements
-COPY requirements.txt .
+# Copy dependency files
+COPY pyproject.toml uv.lock ./
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN uv sync --frozen --no-dev --no-install-project
 
-# Copy shared utilities
-COPY shared/ ./shared/
+# Copy source code
+COPY src/ ./src/
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/app/src
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Development image extends base
-FROM base as development
+FROM base AS development
 
 # Install development dependencies
-COPY requirements-dev.txt .
-RUN pip install --no-cache-dir -r requirements-dev.txt
+RUN uv sync --frozen --no-install-project
 
 # Expose common ports
 EXPOSE 8000

@@ -14,10 +14,10 @@ ModuleNotFoundError: No module named 'pydantic'
 **Solução:**
 ```bash
 # Instale as dependências
-pip install -r requirements.txt
+uv sync
 
 # Ou instale o projeto em modo de desenvolvimento
-pip install -e .
+uv sync --dev
 ```
 
 ### Erro: Python version incompatível
@@ -261,7 +261,7 @@ Defina o PYTHONPATH:
 export PYTHONPATH=/caminho/para/o/projeto:$PYTHONPATH
 
 # Opção 2: Instale o projeto em modo de desenvolvimento
-pip install -e .
+uv sync
 
 # Opção 3: Use imports relativos (dentro do projeto)
 from patterns.message_queue import MessageQueueAgent
@@ -274,7 +274,7 @@ from patterns.message_queue import MessageQueueAgent
 **Checklist:**
 1. Instale as dependências de desenvolvimento:
 ```bash
-pip install -e ".[dev]"
+uv sync
 ```
 
 2. Use pytest-asyncio para testes assíncronos:
@@ -385,7 +385,7 @@ for var in required_vars:
 Antes de relatar um problema, execute este checklist:
 
 - [ ] Python 3.13+ instalado
-- [ ] Dependências instaladas (`pip install -r requirements.txt`)
+- [ ] Dependências instaladas (`uv sync`)
 - [ ] Arquivo `.env` configurado
 - [ ] Azure Service Bus configurado (se necessário)
 - [ ] Filas/tópicos criados no Azure Portal

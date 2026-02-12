@@ -18,7 +18,7 @@ from datetime import datetime
 from dataclasses import dataclass, field
 
 from azure.ai.projects import AIProjectClient
-from azure.ai.projects.models import MessageRole
+from azure.ai.agents.models import MessageRole
 
 from shared.utils import get_project_client, load_env_config
 

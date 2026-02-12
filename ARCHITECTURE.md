@@ -1,569 +1,521 @@
-# 🏗️ Architecture Documentation
+# 🏗️ Documentação de Arquitetura
 
-## Enterprise Integration Agents with Azure AI Foundry
+## Agentes de Integração Empresarial com Azure AI Foundry
 
-This document provides a comprehensive overview of the architecture, design decisions, and implementation details for the enterprise integration patterns using Azure AI Foundry agents.
-
----
-
-## Table of Contents
-
-1. [Overview](#overview)
-2. [Architecture Principles](#architecture-principles)
-3. [System Architecture](#system-architecture)
-4. [Components](#components)
-5. [Integration Patterns](#integration-patterns)
-6. [Data Flow](#data-flow)
-7. [Security Architecture](#security-architecture)
-8. [Scalability & Performance](#scalability--performance)
-9. [Deployment Architecture](#deployment-architecture)
-10. [Monitoring & Observability](#monitoring--observability)
+Este documento fornece uma visão geral completa da arquitetura, decisões de design e detalhes de implementação dos padrões de integração empresarial usando agentes do Azure AI Foundry.
 
 ---
 
-## Overview
+## Índice
 
-### Purpose
-
-This system demonstrates how **Azure AI Foundry agents** can be integrated into enterprise applications using established **Enterprise Integration Patterns (EIP)**. By combining cognitive capabilities with proven integration patterns, we create intelligent, scalable, and maintainable enterprise solutions.
-
-### Goals
-
-- ✅ Demonstrate practical use of Azure AI Foundry v2 SDK
-- ✅ Implement four core enterprise integration patterns
-- ✅ Provide production-ready, containerized solutions
-- ✅ Establish standardized communication via MCP
-- ✅ Enable async, non-blocking operations
-- ✅ Facilitate independent scaling of components
+1. [Visão Geral](#visão-geral)
+2. [Princípios de Arquitetura](#princípios-de-arquitetura)
+3. [Arquitetura do Sistema](#arquitetura-do-sistema)
+4. [Componentes](#componentes)
+5. [Padrões de Integração](#padrões-de-integração)
+6. [Fluxo de Dados](#fluxo-de-dados)
+7. [Arquitetura de Segurança](#arquitetura-de-segurança)
+8. [Escalabilidade e Desempenho](#escalabilidade--desempenho)
+9. [Arquitetura de Deploy](#arquitetura-de-deploy)
+10. [Monitoramento e Observabilidade](#monitoramento--observabilidade)
 
 ---
 
-## Architecture Principles
+## Visão Geral
 
-### 1. Loose Coupling
+### Propósito
 
-Components communicate through **Azure Event Hub** and **MCP layer**, not directly:
-- Publishers don't know about subscribers
-- Filters don't depend on adjacent filters
-- Processors are independent of command submitters
+Este sistema demonstra como **agentes do Azure AI Foundry** podem ser integrados em aplicações empresariais usando **Padrões de Integração Empresarial (EIP)** estabelecidos. Ao combinar capacidades cognitivas com padrões de integração comprovados, criamos soluções empresariais inteligentes, escaláveis e sustentáveis.
 
-### 2. High Cohesion
+### Objetivos
 
-Each pattern is self-contained:
-- Pattern-specific logic stays within pattern folder
-- Shared utilities in common location
-- Clear separation of concerns
-
-### 3. Asynchronous First
-
-All I/O operations are async:
-- Non-blocking Event Hub operations
-- Concurrent agent processing
-- Parallel pipeline execution
-
-### 4. Cognitive Enhancement
-
-AI agents add intelligence:
-- Context-aware processing
-- Natural language understanding
-- Adaptive decision making
-- Learning from interactions
-
-### 5. Observable
-
-Built-in observability:
-- Structured logging
-- Status tracking
-- Metrics collection
-- Error handling
+- ✅ Demonstrar uso prático do SDK v2 do Azure AI Foundry
+- ✅ Implementar quatro padrões essenciais de integração empresarial
+- ✅ Fornecer soluções containerizadas prontas para produção
+- ✅ Estabelecer comunicação padronizada via MCP
+- ✅ Habilitar operações assíncronas e não-bloqueantes
+- ✅ Facilitar escalonamento independente de componentes
 
 ---
 
-## System Architecture
+## Princípios de Arquitetura
 
-### High-Level Architecture
+### 1. Acoplamento Fraco
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         Azure Cloud                                 │
-│                                                                     │
-│  ┌──────────────────────────────────────────────────────────────┐ │
-│  │              Azure AI Foundry Service                        │ │
-│  │                                                              │ │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │ │
-│  │  │   Agent 1   │  │   Agent 2   │  │   Agent N   │        │ │
-│  │  │  (GPT-4)    │  │  (GPT-4)    │  │  (GPT-4)    │        │ │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘        │ │
-│  │                                                              │ │
-│  └──────────────┬───────────────────────────────────────────────┘ │
-│                 │                                                  │
-│                 │ Azure AI SDK v2                                  │
-│                 ▼                                                  │
-│  ┌──────────────────────────────────────────────────────────────┐ │
-│  │              Integration Application Layer                    │ │
-│  │                                                              │ │
-│  │  ┌─────────────────────────────────────────────────────┐   │ │
-│  │  │          MCP Integration Layer                      │   │ │
-│  │  │  (Model Context Protocol + FastAPI)                 │   │ │
-│  │  └───────┬─────────────────────────────────────────────┘   │ │
-│  │          │                                                  │ │
-│  │          ├─────────┬──────────┬──────────┬──────────┐     │ │
-│  │          ▼         ▼          ▼          ▼          ▼     │ │
-│  │  ┌──────────┐ ┌────────┐ ┌────────┐ ┌──────────┐ ┌────┐ │ │
-│  │  │Pattern 1 │ │Pattern2│ │Pattern3│ │Pattern 4 │ │Util│ │ │
-│  │  │:8000     │ │:8001   │ │:8002   │ │:8003     │ │    │ │ │
-│  │  └────┬─────┘ └───┬────┘ └───┬────┘ └────┬─────┘ └────┘ │ │
-│  │       │           │          │           │               │ │
-│  └───────┼───────────┼──────────┼───────────┼───────────────┘ │
-│          │           │          │           │                  │
-│          └───────────┴──────────┴───────────┘                  │
-│                      │                                          │
-│                      ▼                                          │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │           Azure Event Hub                                │  │
-│  │           (Message Broker)                               │  │
-│  │                                                          │  │
-│  │  Topics: customer_events, order_events, system_events   │  │
-│  │  Queues: command_queue, task_queue                      │  │
-│  └──────────────────────────────────────────────────────────┘  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+Componentes se comunicam através do **Azure Event Hub** e da **camada MCP**, não diretamente:
+- Publicadores não conhecem os assinantes
+- Filtros não dependem de filtros adjacentes
+- Processadores são independentes dos submissores de comandos
+
+### 2. Alta Coesão
+
+Cada padrão é autocontido:
+- Lógica específica do padrão permanece na pasta do padrão
+- Utilitários compartilhados em local comum
+- Separação clara de responsabilidades
+
+### 3. Assíncrono Primeiro
+
+Todas as operações de I/O são assíncronas:
+- Operações não-bloqueantes com Event Hub
+- Processamento concorrente de agentes
+- Execução paralela de pipelines
+
+### 4. Aprimoramento Cognitivo
+
+Agentes de IA adicionam inteligência:
+- Processamento consciente de contexto
+- Compreensão de linguagem natural
+- Tomada de decisão adaptativa
+- Aprendizado a partir de interações
+
+### 5. Observável
+
+Observabilidade embutida:
+- Logging estruturado
+- Rastreamento de status
+- Coleta de métricas
+- Tratamento de erros
+
+---
+
+## Arquitetura do Sistema
+
+### Arquitetura de Alto Nível
+
+```mermaid
+graph TB
+    subgraph Azure["Nuvem Azure"]
+        subgraph AIF["Serviço Azure AI Foundry"]
+            A1["Agente 1 (GPT-4)"]
+            A2["Agente 2 (GPT-4)"]
+            AN["Agente N (GPT-4)"]
+        end
+        AIF -->|Azure AI SDK v2| APP
+        subgraph APP["Camada de Aplicação de Integração"]
+            MCP["Camada de Integração MCP<br/>(Model Context Protocol + FastAPI)"]
+            MCP --> P1["Padrão 1 :8000"]
+            MCP --> P2["Padrão 2 :8001"]
+            MCP --> P3["Padrão 3 :8002"]
+            MCP --> P4["Padrão 4 :8003"]
+            MCP --> UTIL["Util"]
+        end
+        P1 --> EH
+        P2 --> EH
+        P3 --> EH
+        P4 --> EH
+        subgraph EH["Azure Event Hub (Broker de Mensagens)"]
+            TOPICS["Tópicos: customer_events, order_events, system_events<br/>Filas: command_queue, task_queue"]
+        end
+    end
 ```
 
-### Component Layers
+### Camadas de Componentes
 
-#### Layer 1: Azure AI Foundry
-- Hosts AI agents with specialized capabilities
-- Provides conversation threads for context
-- Executes intelligent processing
+#### Camada 1: Azure AI Foundry
+- Hospeda agentes de IA com capacidades especializadas
+- Fornece threads de conversação para contexto
+- Executa processamento inteligente
 
-#### Layer 2: MCP Integration Layer
-- Standardizes communication protocol
-- Provides REST API interface
-- Handles message routing
-- Manages agent interactions
+#### Camada 2: Camada de Integração MCP
+- Padroniza o protocolo de comunicação
+- Fornece interface REST API
+- Gerencia roteamento de mensagens
+- Gerencia interações com agentes
 
-#### Layer 3: Pattern Implementations
-- Four independent integration patterns
-- Each with own API server
-- Containerized for deployment
-- Shares common utilities
+#### Camada 3: Implementações de Padrões
+- Quatro padrões de integração independentes
+- Cada um com seu próprio servidor de API
+- Containerizados para deploy
+- Compartilham utilitários comuns
 
-#### Layer 4: Message Broker
-- Azure Event Hub for reliable messaging
-- Topic-based routing
-- Queue-based task distribution
-- Guaranteed delivery
+#### Camada 4: Broker de Mensagens
+- Azure Event Hub para mensageria confiável
+- Roteamento baseado em tópicos
+- Distribuição de tarefas baseada em fila
+- Entrega garantida
 
 ---
 
-## Components
+## Componentes
 
-### Shared Components
+### Componentes Compartilhados
 
-#### 1. MCP Base Layer (`shared/mcp/__init__.py`)
+#### 1. Camada Base MCP (`shared/mcp/__init__.py`)
 
-**Purpose:** Standardize communication between components
+**Propósito:** Padronizar comunicação entre componentes
 
-**Key Classes:**
-- `MCPMessage` - Standard message format
-- `MCPAdapter` - Abstract message broker adapter
-- `MCPRouter` - Routes messages to handlers
+**Classes Principais:**
+- `MCPMessage` - Formato de mensagem padronizado
+- `MCPAdapter` - Adaptador abstrato de broker de mensagens
+- `MCPRouter` - Roteia mensagens para handlers
 
-**Design Pattern:** Abstract Factory + Strategy
+**Padrão de Design:** Abstract Factory + Strategy
 
 #### 2. FastAPI MCP (`shared/mcp/fastapi_mcp.py`)
 
-**Purpose:** REST API server for MCP operations
+**Propósito:** Servidor REST API para operações MCP
 
-**Features:**
-- Message submission endpoint
-- Handler registration
+**Funcionalidades:**
+- Endpoint de submissão de mensagens
+- Registro de handlers
 - Health checks
-- Automatic routing
+- Roteamento automático
 
-**Port Allocation:**
-- Pattern 1: 8000
-- Pattern 2: 8001
-- Pattern 3: 8002
-- Pattern 4: 8003
+**Alocação de Portas:**
+- Padrão 1: 8000
+- Padrão 2: 8001
+- Padrão 3: 8002
+- Padrão 4: 8003
 
-#### 3. Agent Utilities (`shared/utils/agent_utils.py`)
+#### 3. Utilitários de Agentes (`shared/utils/agent_utils.py`)
 
-**Purpose:** Manage Azure AI Foundry agents
+**Propósito:** Gerenciar agentes do Azure AI Foundry
 
-**Functions:**
-- `get_project_client()` - Initialize AI client
-- `load_env_config()` - Load configuration
-- `create_agent()` - Create specialized agents
+**Funções:**
+- `get_project_client()` - Inicializar cliente de IA
+- `load_env_config()` - Carregar configuração
+- `create_agent()` - Criar agentes especializados
 
-#### 4. Event Hub Utilities (`shared/utils/eventhub_utils.py`)
+#### 4. Utilitários de Event Hub (`shared/utils/eventhub_utils.py`)
 
-**Purpose:** Manage Azure Event Hub integration
+**Propósito:** Gerenciar integração com Azure Event Hub
 
-**Class: EventHubAdapter**
-- `send_event()` - Publish messages
-- `receive_events()` - Consume messages
-- Connection pooling
-- Automatic checkpointing
-
----
-
-## Integration Patterns
-
-### Pattern 1: Message Queue Monitor and Executor
-
-#### Architecture
-```
-Producer → Event Hub Queue → AI Agent Monitor → Process & Execute
-```
-
-#### Components
-- `MessageQueueAgent` - Monitors and processes queue messages
-- FastAPI server for message submission
-- Event Hub for queue storage
-
-#### Flow
-1. Client submits task to API
-2. Task queued in Event Hub
-3. Agent polls queue
-4. Agent processes with AI
-5. Result stored and logged
-
-#### Use Cases
-- Background job processing
-- Task distribution
-- Asynchronous operations
+**Classe: EventHubAdapter**
+- `send_event()` - Publicar mensagens
+- `receive_events()` - Consumir mensagens
+- Pool de conexões
+- Checkpointing automático
 
 ---
 
-### Pattern 2: Pipes and Filters
+## Padrões de Integração
 
-#### Architecture
+### Padrão 1: Monitor e Executor de Fila de Mensagens
+
+#### Arquitetura
+```mermaid
+graph LR
+    A["Produtor"] --> B["Fila Event Hub"] --> C["Monitor Agente IA"] --> D["Processar e Executar"]
 ```
-Input → Filter 1 (Agent) → Filter 2 (Agent) → Filter N (Agent) → Output
-```
 
-#### Components
-- `CognitiveFilter` - AI-powered filter
-- `Pipeline` - Sequential orchestration
-- `ParallelPipeline` - Concurrent execution
-- `PipelineData` - Data container with metadata
+#### Componentes
+- `MessageQueueAgent` - Monitora e processa mensagens da fila
+- Servidor FastAPI para submissão de mensagens
+- Event Hub para armazenamento em fila
 
-#### Flow
-1. Input data enters pipeline
-2. Each filter transforms data using AI
-3. Transformations tracked
-4. Final output returned
+#### Fluxo
+1. Cliente envia tarefa para a API
+2. Tarefa enfileirada no Event Hub
+3. Agente consulta a fila
+4. Agente processa com IA
+5. Resultado armazenado e registrado
 
-#### Modes
-- **Sequential:** Filters execute one after another
-- **Parallel:** Filters execute simultaneously
-
-#### Use Cases
-- Data transformation pipelines
-- Multi-stage content processing
-- ETL operations
+#### Casos de Uso
+- Processamento de jobs em segundo plano
+- Distribuição de tarefas
+- Operações assíncronas
 
 ---
 
-### Pattern 3: Publish/Subscribe
+### Padrão 2: Pipes e Filtros
 
-#### Architecture
+#### Arquitetura
+```mermaid
+graph LR
+    A["Entrada"] --> B["Filtro 1 (Agente)"] --> C["Filtro 2 (Agente)"] --> D["Filtro N (Agente)"] --> E["Saída"]
 ```
-Publishers → Topics (Event Hub) → Multiple AI Subscriber Agents
-```
 
-#### Components
-- `AgentSubscriber` - AI agent that subscribes to topics
-- `PubSubBroker` - Manages subscriptions and routing
-- `Message` - Topic-based message
-- `TopicType` - Enum of available topics
+#### Componentes
+- `CognitiveFilter` - Filtro alimentado por IA
+- `Pipeline` - Orquestração sequencial
+- `ParallelPipeline` - Execução concorrente
+- `PipelineData` - Container de dados com metadados
 
-#### Flow
-1. Publisher sends message to topic
-2. Event Hub broadcasts to all subscribers
-3. Interested agents process in parallel
-4. Each provides unique analysis
+#### Fluxo
+1. Dados de entrada entram no pipeline
+2. Cada filtro transforma os dados usando IA
+3. Transformações são rastreadas
+4. Saída final é retornada
 
-#### Topics
-- `customer_events` - Customer interactions
-- `order_events` - Order processing
-- `system_events` - System operations
-- `analytics_events` - Business intelligence
+#### Modos
+- **Sequencial:** Filtros executam um após o outro
+- **Paralelo:** Filtros executam simultaneamente
 
-#### Use Cases
-- Event-driven microservices
-- Real-time analytics
-- Multi-consumer event processing
+#### Casos de Uso
+- Pipelines de transformação de dados
+- Processamento de conteúdo em múltiplos estágios
+- Operações ETL
 
 ---
 
-### Pattern 4: Command Messages
+### Padrão 3: Publish/Subscribe
 
-#### Architecture
+#### Arquitetura
+```mermaid
+graph LR
+    A["Publicadores"] --> B["Tópicos (Event Hub)"] --> C["Múltiplos Agentes Assinantes de IA"]
 ```
-Client → Command (Event Hub) → Processor Agent → Result Tracking
-```
 
-#### Components
-- `CommandMessage` - Command with parameters and status
-- `CommandProcessor` - AI agent that executes commands
-- `AsyncCommandPipeline` - Async orchestration
-- `CommandStatus` - Lifecycle tracking
+#### Componentes
+- `AgentSubscriber` - Agente de IA que assina tópicos
+- `PubSubBroker` - Gerencia assinaturas e roteamento
+- `Message` - Mensagem baseada em tópico
+- `TopicType` - Enum de tópicos disponíveis
 
-#### Flow
-1. Client submits command
-2. Command queued with unique ID
-3. Processor picks up command
-4. AI agent executes
-5. Status updated
-6. Client polls for results
+#### Fluxo
+1. Publicador envia mensagem para um tópico
+2. Event Hub transmite para todos os assinantes
+3. Agentes interessados processam em paralelo
+4. Cada um fornece análise única
 
-#### Command Types
-- `process_data` - Data operations
-- `analyze_content` - Content analysis
-- `generate_report` - Report creation
-- `validate_input` - Validation
-- `transform_data` - Transformations
+#### Tópicos
+- `customer_events` - Interações com clientes
+- `order_events` - Processamento de pedidos
+- `system_events` - Operações do sistema
+- `analytics_events` - Inteligência de negócios
 
-#### Use Cases
-- Long-running operations
-- Trackable execution
-- Auditable commands
-- Async request/response
+#### Casos de Uso
+- Microsserviços orientados a eventos
+- Analytics em tempo real
+- Processamento de eventos com múltiplos consumidores
 
 ---
 
-## Data Flow
+### Padrão 4: Mensagens de Comando
 
-### Message Flow Pattern
-
-All patterns follow similar message flow:
-
-```
-┌────────────┐
-│   Client   │
-└─────┬──────┘
-      │ 1. HTTP Request
-      ▼
-┌────────────────┐
-│   FastAPI      │
-│   MCP Server   │
-└────────┬───────┘
-         │ 2. MCP Message
-         ▼
-┌───────────────────┐
-│   Event Hub       │
-│   (Async Queue)   │
-└────────┬──────────┘
-         │ 3. Event Stream
-         ▼
-┌───────────────────┐
-│   Pattern Logic   │
-│   (Processor)     │
-└────────┬──────────┘
-         │ 4. AI Request
-         ▼
-┌───────────────────┐
-│  Azure AI Agent   │
-│  (GPT-4)          │
-└────────┬──────────┘
-         │ 5. AI Response
-         ▼
-┌───────────────────┐
-│   Result Store    │
-│   (In-Memory)     │
-└───────────────────┘
+#### Arquitetura
+```mermaid
+graph LR
+    A["Cliente"] --> B["Comando (Event Hub)"] --> C["Agente Processador"] --> D["Rastreamento de Resultado"]
 ```
 
-### Data Transformation
+#### Componentes
+- `CommandMessage` - Comando com parâmetros e status
+- `CommandProcessor` - Agente de IA que executa comandos
+- `AsyncCommandPipeline` - Orquestração assíncrona
+- `CommandStatus` - Rastreamento de ciclo de vida
 
-#### Pattern 1: Queue Processing
-```
-Task Description → AI Analysis → Action Recommendations
+#### Fluxo
+1. Cliente envia comando
+2. Comando enfileirado com ID único
+3. Processador pega o comando
+4. Agente de IA executa
+5. Status atualizado
+6. Cliente consulta resultados
+
+#### Tipos de Comando
+- `process_data` - Operações com dados
+- `analyze_content` - Análise de conteúdo
+- `generate_report` - Criação de relatórios
+- `validate_input` - Validação
+- `transform_data` - Transformações
+
+#### Casos de Uso
+- Operações de longa duração
+- Execução rastreável
+- Comandos auditáveis
+- Requisição/resposta assíncrona
+
+---
+
+## Fluxo de Dados
+
+### Padrão de Fluxo de Mensagens
+
+Todos os padrões seguem um fluxo de mensagens similar:
+
+```mermaid
+graph TB
+    CLI["Cliente"] -->|1. Requisição HTTP| API["FastAPI<br/>Servidor MCP"]
+    API -->|2. Mensagem MCP| EVH["Event Hub<br/>(Fila Assínc.)"]
+    EVH -->|3. Stream de Eventos| PAT["Lógica do Padrão"]
+    PAT -->|4. Requisição IA| AI["Agente Azure IA<br/>(GPT-4)"]
+    AI -->|5. Resposta IA| RES["Armazenamento de Resultados"]
 ```
 
-#### Pattern 2: Pipeline Processing
-```
-Raw Data → Filter 1 → Filter 2 → Filter N → Enriched Data
+### Transformação de Dados
+
+#### Padrão 1: Processamento de Fila
+```mermaid
+graph LR
+    A["Descrição da Tarefa"] --> B["Análise IA"] --> C["Recomendações de Ação"]
 ```
 
-#### Pattern 3: Pub/Sub Processing
-```
-Event → Topic → [Agent 1, Agent 2, Agent N] → Multiple Analyses
+#### Padrão 2: Processamento em Pipeline
+```mermaid
+graph LR
+    A["Dados Brutos"] --> B["Filtro 1"] --> C["Filtro 2"] --> D["Filtro N"] --> E["Dados Enriquecidos"]
 ```
 
-#### Pattern 4: Command Processing
+#### Padrão 3: Processamento Pub/Sub
+```mermaid
+graph LR
+    A["Evento"] --> B["Tópico"]
+    B --> C["Agente 1"]
+    B --> D["Agente 2"]
+    B --> E["Agente N"]
+    C --> F["Múltiplas Análises"]
+    D --> F
+    E --> F
 ```
-Command + Parameters → AI Execution → Result + Status
+
+#### Padrão 4: Processamento de Comandos
+```mermaid
+graph LR
+    A["Comando + Parâmetros"] --> B["Execução IA"] --> C["Resultado + Status"]
 ```
 
 ---
 
-## Security Architecture
+## Arquitetura de Segurança
 
-### Authentication & Authorization
+### Autenticação e Autorização
 
 1. **Azure Managed Identity**
-   - Recommended for production
-   - No credential storage
-   - Automatic token refresh
+   - Recomendado para produção
+   - Sem armazenamento de credenciais
+   - Renovação automática de tokens
 
 2. **Connection Strings**
-   - Development/testing
-   - Stored in environment variables
-   - Never committed to source
+   - Desenvolvimento/testes
+   - Armazenadas em variáveis de ambiente
+   - Nunca commitadas no código-fonte
 
-### Network Security
+### Segurança de Rede
 
-```
-┌─────────────────────────────────────────┐
-│           Azure VNET                    │
-│                                         │
-│  ┌──────────────┐    ┌──────────────┐ │
-│  │  App Service │    │  Event Hub   │ │
-│  │  (Private)   │───→│  (Private)   │ │
-│  └──────────────┘    └──────────────┘ │
-│         │                    │         │
-│         └────────┬───────────┘         │
-│                  │                     │
-│                  ▼                     │
-│         ┌──────────────┐              │
-│         │  AI Foundry  │              │
-│         │  (Private)   │              │
-│         └──────────────┘              │
-│                                         │
-└─────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph VNET["Azure VNET"]
+        AS["App Service (Privado)"] --> EVH["Event Hub (Privado)"]
+        AS --> AIF["AI Foundry (Privado)"]
+        EVH --> AIF
+    end
 ```
 
-### Data Protection
+### Proteção de Dados
 
-1. **In Transit**
-   - TLS 1.2+ for all connections
-   - Azure Event Hub encryption
-   - HTTPS for APIs
+1. **Em Trânsito**
+   - TLS 1.2+ para todas as conexões
+   - Criptografia do Azure Event Hub
+   - HTTPS para APIs
 
-2. **At Rest**
-   - Azure storage encryption
-   - Event Hub data encryption
-   - No PII in logs
+2. **Em Repouso**
+   - Criptografia de armazenamento Azure
+   - Criptografia de dados do Event Hub
+   - Sem PII nos logs
 
-### Best Practices
+### Melhores Práticas
 
-- ✅ Use Azure Key Vault for secrets
-- ✅ Enable network isolation
-- ✅ Implement least privilege access
-- ✅ Audit all operations
-- ✅ Rotate credentials regularly
-- ✅ Monitor for anomalies
+- ✅ Use Azure Key Vault para segredos
+- ✅ Habilite isolamento de rede
+- ✅ Implemente acesso com menor privilégio
+- ✅ Audite todas as operações
+- ✅ Rotacione credenciais regularmente
+- ✅ Monitore anomalias
 
 ---
 
-## Scalability & Performance
+## Escalabilidade e Desempenho
 
-### Horizontal Scaling
+### Escalonamento Horizontal
 
-Each pattern scales independently:
+Cada padrão escala independentemente:
 
-```
-┌─────────────────────────────────────────────┐
-│              Load Balancer                  │
-└───────┬─────────┬─────────┬────────┬────────┘
-        │         │         │        │
-        ▼         ▼         ▼        ▼
-    ┌────┐    ┌────┐    ┌────┐   ┌────┐
-    │ P1 │    │ P1 │    │ P1 │   │ P1 │
-    │:8000   │:8000   │:8000   │:8000
-    └────┘    └────┘    └────┘   └────┘
+```mermaid
+graph TB
+    LB["Balanceador de Carga"] --> R1["P1 :8000"]
+    LB --> R2["P1 :8000"]
+    LB --> R3["P1 :8000"]
+    LB --> R4["P1 :8000"]
 ```
 
-### Performance Characteristics
+### Características de Desempenho
 
-#### Pattern 1: Message Queue
-- **Throughput:** ~1000 msgs/sec
-- **Latency:** 100-500ms per message
-- **Bottleneck:** AI agent processing time
+#### Padrão 1: Fila de Mensagens
+- **Throughput:** ~1000 msgs/seg
+- **Latência:** 100-500ms por mensagem
+- **Gargalo:** Tempo de processamento do agente IA
 
-#### Pattern 2: Pipes & Filters
-- **Sequential:** Sum of filter latencies
-- **Parallel:** Max filter latency
-- **Bottleneck:** Slowest filter
+#### Padrão 2: Pipes e Filtros
+- **Sequencial:** Soma das latências dos filtros
+- **Paralelo:** Latência máxima do filtro
+- **Gargalo:** Filtro mais lento
 
-#### Pattern 3: Pub/Sub
-- **Fan-out:** 1:N message delivery
-- **Parallel:** All subscribers process concurrently
-- **Bottleneck:** Event Hub throughput
+#### Padrão 3: Pub/Sub
+- **Fan-out:** Entrega de mensagem 1:N
+- **Paralelo:** Todos os assinantes processam concorrentemente
+- **Gargalo:** Throughput do Event Hub
 
-#### Pattern 4: Commands
-- **Async:** Client doesn't wait
-- **Status polling:** Minimal overhead
-- **Bottleneck:** Processor count
+#### Padrão 4: Comandos
+- **Assíncrono:** Cliente não aguarda
+- **Consulta de status:** Overhead mínimo
+- **Gargalo:** Número de processadores
 
-### Optimization Strategies
+### Estratégias de Otimização
 
-1. **Agent Pooling**
-   - Reuse agent threads
-   - Reduce cold start time
+1. **Pool de Agentes**
+   - Reutilizar threads de agentes
+   - Reduzir tempo de cold start
 
-2. **Batching**
-   - Batch Event Hub operations
-   - Reduce API calls
+2. **Processamento em Lote**
+   - Agrupar operações do Event Hub
+   - Reduzir chamadas de API
 
-3. **Caching**
-   - Cache agent responses
-   - Reduce duplicate processing
+3. **Cache**
+   - Cachear respostas de agentes
+   - Reduzir processamento duplicado
 
-4. **Connection Pooling**
-   - Reuse connections
-   - Reduce handshake overhead
+4. **Pool de Conexões**
+   - Reutilizar conexões
+   - Reduzir overhead de handshake
 
 ---
 
-## Deployment Architecture
+## Arquitetura de Deploy
 
-### Container Deployment
+### Deploy em Containers
 
-Each pattern deploys as a container:
+Cada padrão é implantado como um container:
 
 ```yaml
 # docker-compose.yml
 version: '3.8'
 services:
-  pattern-1:
+  message-queue:
     build:
       context: .
-      dockerfile: pattern-1-message-queue/Dockerfile
+      dockerfile: src/services/message_queue/Dockerfile
     ports:
       - "8000:8000"
     env_file: .env
     
-  pattern-2:
+  pipes-filters:
     build:
       context: .
-      dockerfile: pattern-2-pipes-filters/Dockerfile
+      dockerfile: src/services/pipes_filters/Dockerfile
     ports:
       - "8001:8001"
     env_file: .env
     
-  pattern-3:
+  pubsub:
     build:
       context: .
-      dockerfile: pattern-3-pubsub/Dockerfile
+      dockerfile: src/services/pubsub/Dockerfile
     ports:
       - "8002:8002"
     env_file: .env
     
-  pattern-4:
+  command-messages:
     build:
       context: .
-      dockerfile: pattern-4-command-messages/Dockerfile
+      dockerfile: src/services/command_messages/Dockerfile
     ports:
       - "8003:8003"
     env_file: .env
 ```
 
-### Kubernetes Deployment
+### Deploy no Kubernetes
 
 ```yaml
 # pattern-deployment.yaml
@@ -612,24 +564,24 @@ spec:
 
 ### Azure Container Apps
 
-Recommended for serverless deployment:
-- Automatic scaling
-- Managed infrastructure
-- Built-in load balancing
-- Pay-per-use pricing
+Recomendado para deploy serverless:
+- Escalonamento automático
+- Infraestrutura gerenciada
+- Balanceamento de carga embutido
+- Precificação por uso
 
 ---
 
-## Monitoring & Observability
+## Monitoramento e Observabilidade
 
-### Logging Strategy
+### Estratégia de Logging
 
 ```python
 import logging
 
-# Structured logging
+# Logging estruturado
 logger.info(
-    "Processing message",
+    "Processando mensagem",
     extra={
         "message_id": message.id,
         "pattern": "message-queue",
@@ -639,45 +591,47 @@ logger.info(
 )
 ```
 
-### Key Metrics
+### Métricas Principais
 
-#### Application Metrics
-- Requests per second
-- Response time (p50, p95, p99)
-- Error rate
-- Agent processing time
+#### Métricas da Aplicação
+- Requisições por segundo
+- Tempo de resposta (p50, p95, p99)
+- Taxa de erros
+- Tempo de processamento do agente
 
-#### Pattern-Specific Metrics
-- Queue depth (Pattern 1)
-- Pipeline throughput (Pattern 2)
-- Subscriber count (Pattern 3)
-- Command status distribution (Pattern 4)
+#### Métricas Específicas por Padrão
+- Profundidade da fila (Padrão 1)
+- Throughput do pipeline (Padrão 2)
+- Contagem de assinantes (Padrão 3)
+- Distribuição de status de comandos (Padrão 4)
 
-### Monitoring Stack
+### Stack de Monitoramento
 
-```
-Application → Azure Monitor → Log Analytics
-                           → Application Insights
-                           → Alerts & Dashboards
+```mermaid
+graph LR
+    APP["Aplicação"] --> AM["Azure Monitor"]
+    AM --> LA["Log Analytics"]
+    AM --> AI["Application Insights"]
+    AM --> AL["Alertas e Dashboards"]
 ```
 
 ### Health Checks
 
-Each pattern implements:
-- `/health` - Basic health
-- `/ready` - Readiness probe
-- `/live` - Liveness probe
+Cada padrão implementa:
+- `/health` - Saúde básica
+- `/ready` - Sonda de prontidão
+- `/live` - Sonda de vivacidade
 
 ---
 
-## Conclusion
+## Conclusão
 
-This architecture provides:
-- ✅ **Scalable** - Each component scales independently
-- ✅ **Resilient** - Fault isolation between patterns
-- ✅ **Observable** - Comprehensive logging and metrics
-- ✅ **Secure** - Azure best practices
-- ✅ **Maintainable** - Clear separation of concerns
-- ✅ **Cognitive** - AI-enhanced processing
+Esta arquitetura fornece:
+- ✅ **Escalável** - Cada componente escala independentemente
+- ✅ **Resiliente** - Isolamento de falhas entre padrões
+- ✅ **Observável** - Logging e métricas completos
+- ✅ **Segura** - Melhores práticas Azure
+- ✅ **Sustentável** - Separação clara de responsabilidades
+- ✅ **Cognitiva** - Processamento aprimorado por IA
 
-The combination of proven enterprise integration patterns with modern AI capabilities creates a powerful foundation for building intelligent enterprise applications.
+A combinação de padrões comprovados de integração empresarial com capacidades modernas de IA cria uma base poderosa para construir aplicações empresariais inteligentes.

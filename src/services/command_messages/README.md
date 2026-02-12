@@ -1,144 +1,121 @@
-# 🎬 Pattern 4: Command Messages with Asynchronous Pipelines
+# 🎬 Padrão 4: Mensagens de Comando com Pipelines Assíncronos
 
-## 📺 YouTube Presentation Style
+## 📺 Estilo de Apresentação YouTube
 
-Hey architects! 👨‍💻 Ready for the FINAL pattern? This is where **command-driven architecture meets AI intelligence**! Let's build **Command Messages with Async Pipelines**!
+E aí, arquitetos! 👨‍💻 Prontos para o ÚLTIMO padrão? É aqui que a **arquitetura orientada a comandos encontra a inteligência artificial**! Vamos construir **Mensagens de Comando com Pipelines Assíncronos**!
 
-## 🎯 What Are Command Messages?
+## 🎯 O Que São Mensagens de Comando?
 
-Think of it like **issuing orders** to your system:
-- 📋 **Commands** - Specific actions to execute
-- 🤖 **AI Processors** - Intelligent command executors
-- ⚡ **Async Processing** - Non-blocking execution
-- 📊 **Status Tracking** - Real-time progress monitoring
+Pense como se estivesse **dando ordens** ao seu sistema:
+- 📋 **Comandos** - Ações específicas a executar
+- 🤖 **Processadores de IA** - Executores inteligentes de comandos
+- ⚡ **Processamento Assíncrono** - Execução não-bloqueante
+- 📊 **Rastreamento de Status** - Monitoramento de progresso em tempo real
 
-Commands aren't just data - they're **actionable instructions**! 🎯
+Comandos não são apenas dados - são **instruções acionáveis**! 🎯
 
-## 🏗️ Architecture Overview
+## 🏗️ Visão Geral da Arquitetura
 
-```
-┌─────────────┐
-│   Client    │
-│  Submits    │
-│  Command    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────┐
-│  Command Queue  │
-│  (Event Hub)    │
-└────────┬────────┘
-         │
-         ├──────────────────┬──────────────────┐
-         │                  │                  │
-         ▼                  ▼                  ▼
-┌────────────────┐  ┌────────────────┐  ┌────────────────┐
-│ Data Processor │  │ Content        │  │ Report         │
-│     Agent      │  │ Analyzer       │  │ Generator      │
-│                │  │ Agent          │  │ Agent          │
-│ Commands:      │  │                │  │                │
-│ - Process      │  │ Commands:      │  │ Commands:      │
-│ - Transform    │  │ - Analyze      │  │ - Generate     │
-└────────────────┘  └────────────────┘  └────────────────┘
-         │                  │                  │
-         └──────────────────┴──────────────────┘
-                            │
-                            ▼
-                    ┌───────────────┐
-                    │    Results    │
-                    │   Tracking    │
-                    └───────────────┘
+```mermaid
+graph TB
+    CLI["Cliente\nEnvia Comando"] --> Q["Fila de Comandos\n(Event Hub)"]
+    Q --> P1["Processador de Dados\n(Agente)"]
+    Q --> P2["Analisador de Conteúdo\n(Agente)"]
+    Q --> P3["Gerador de Relatórios\n(Agente)"]
+    P1 --> R["Rastreamento\nde Resultados"]
+    P2 --> R
+    P3 --> R
 ```
 
-## 🔥 The Enterprise Integration Pattern
+## 🔥 O Padrão de Integração Empresarial
 
-**Command Message** pattern features:
+O padrão **Mensagem de Comando** possui:
 
-1. **Command** - Explicit instruction with parameters
-2. **Processor** - Agent that executes the command
-3. **Async Execution** - Non-blocking, parallel processing
-4. **Status Updates** - Track command lifecycle
-5. **Result Retrieval** - Get outcomes when ready
+1. **Comando** - Instrução explícita com parâmetros
+2. **Processador** - Agente que executa o comando
+3. **Execução Assíncrona** - Processamento não-bloqueante e paralelo
+4. **Atualizações de Status** - Rastrear ciclo de vida do comando
+5. **Recuperação de Resultados** - Obter resultados quando prontos
 
-### Why Command Pattern Rocks! 🎸
+### Por Que o Padrão de Comando é Incrível! 🎸
 
-- ✅ **Intent-Driven** - Commands express clear intent
-- ✅ **Trackable** - Every command has an ID and status
-- ✅ **Auditable** - Full command history
-- ✅ **Asynchronous** - Don't wait for long operations
-- ✅ **Scalable** - Add processors without changing submitters
+- ✅ **Orientado a Intenção** - Comandos expressam intenção clara
+- ✅ **Rastreável** - Todo comando tem um ID e status
+- ✅ **Auditável** - Histórico completo de comandos
+- ✅ **Assíncrono** - Não espere por operações longas
+- ✅ **Escalável** - Adicione processadores sem alterar submissores
 
-## 🛠️ Technologies Used
+## 🛠️ Tecnologias Utilizadas
 
-- **Azure Event Hub** - Command queue ⚡
-- **Azure AI Foundry Agents** - Command processors 🤖
-- **Async Python** - Non-blocking execution 🚀
-- **FastAPI + MCP** - REST API with status tracking 📡
-- **Command Pattern** - Clean separation of concerns 🎯
+- **Azure Event Hub** - Fila de comandos ⚡
+- **Agentes Azure AI Foundry** - Processadores de comandos 🤖
+- **Python Assíncrono** - Execução não-bloqueante 🚀
+- **FastAPI + MCP** - API REST com rastreamento de status 📡
+- **Padrão Command** - Separação limpa de responsabilidades 🎯
 
-## 🚀 Quick Start
+## 🚀 Início Rápido
 
-### Prerequisites
+### Pré-requisitos
 
-1. Azure Event Hub configured
-2. Azure AI Foundry project
+1. Azure Event Hub configurado
+2. Projeto Azure AI Foundry
 3. Python 3.11+
 
-### Setup
+### Configuração
 
-1. **Navigate:**
+1. **Navegue:**
 ```bash
-cd pattern-4-command-messages
+cd src/services/command_messages
 ```
 
 2. **Configure:**
 ```bash
 cp ../.env.example .env
-# Add credentials
+# Adicione as credenciais
 ```
 
-3. **Install:**
+3. **Instale:**
 ```bash
-pip install -r ../requirements.txt
+uv sync
 ```
 
-### 🏃 Running
+### 🏃 Executando
 
-**Option 1: Demo**
+**Opção 1: Demo**
 ```bash
 python main.py
 ```
 
-**Option 2: REST API**
+**Opção 2: API REST**
 ```bash
 python api.py
-# OR
+# OU
 uvicorn api:app --port 8003 --reload
 ```
 
 ### 🐳 Docker
 
-**Build:**
+**Construir:**
 ```bash
-# Production
+# Produção
 docker build -t command-messages-agent --target production .
 
-# Development
+# Desenvolvimento
 docker build -t command-messages-agent-dev --target development .
 ```
 
-**Run:**
+**Executar:**
 ```bash
-# Production
+# Produção
 docker run --env-file .env command-messages-agent
 
-# Development
-docker run -p 8003:8003 -v $(pwd):/app/pattern-4-command-messages --env-file .env command-messages-agent-dev
+# Desenvolvimento
+docker run -p 8003:8003 -v $(pwd):/app/src/services/command_messages --env-file .env command-messages-agent-dev
 ```
 
-## 📡 API Endpoints
+## 📡 Endpoints da API
 
-### Submit Command
+### Enviar Comando
 ```bash
 POST /commands/submit
 {
@@ -152,27 +129,27 @@ POST /commands/submit
   }
 }
 
-Response:
+Resposta:
 {
-  "command_id": "uuid-here",
+  "command_id": "uuid-aqui",
   "command_type": "process_data",
   "status": "pending",
   "created_at": "2024-01-01T00:00:00"
 }
 ```
 
-### Check Command Status
+### Verificar Status do Comando
 ```bash
 GET /commands/{command_id}
 
-Response:
+Resposta:
 {
   "command_id": "uuid",
   "command_type": "process_data",
   "status": "completed",
   "result": {
-    "processor": "Data Processor",
-    "response": "Statistics calculated...",
+    "processor": "Processador de Dados",
+    "response": "Estatísticas calculadas...",
     "execution_time": "2024-01-01T00:00:05"
   },
   "error": null,
@@ -181,17 +158,17 @@ Response:
 }
 ```
 
-### Create Custom Processor
+### Criar Processador Personalizado
 ```bash
 POST /processors/create
 {
-  "name": "Custom Processor",
+  "name": "Processador Personalizado",
   "command_types": ["process_data"],
-  "instructions": "Process data according to..."
+  "instructions": "Processar dados de acordo com..."
 }
 ```
 
-### Create Preset Processors
+### Criar Processadores Pré-configurados
 ```bash
 POST /processors/preset/data-processor
 POST /processors/preset/content-analyzer
@@ -199,33 +176,33 @@ POST /processors/preset/report-generator
 POST /processors/preset/validator
 ```
 
-### List Processors
+### Listar Processadores
 ```bash
 GET /processors
 ```
 
-### Start Pipeline
+### Iniciar Pipeline
 ```bash
 POST /pipeline/start
 ```
 
-### List Command Types
+### Listar Tipos de Comando
 ```bash
 GET /command-types
 ```
 
-## 💡 How It Works
+## 💡 Como Funciona
 
-### 1. Command Types
-Five command types available:
-- `process_data` - Data processing operations
-- `analyze_content` - Content analysis
-- `generate_report` - Report generation
-- `validate_input` - Input validation
-- `transform_data` - Data transformation
+### 1. Tipos de Comando
+Cinco tipos de comando disponíveis:
+- `process_data` - Operações de processamento de dados
+- `analyze_content` - Análise de conteúdo
+- `generate_report` - Geração de relatórios
+- `validate_input` - Validação de entrada
+- `transform_data` - Transformação de dados
 
-### 2. Command Submission
-Client submits command:
+### 2. Submissão de Comando
+Cliente envia o comando:
 ```python
 command = CommandMessage(
     command_id=uuid.uuid4(),
@@ -235,116 +212,116 @@ command = CommandMessage(
 await pipeline.submit_command(command)
 ```
 
-### 3. Async Processing
-- Command queued in Event Hub
-- Pipeline picks it up
-- Routes to appropriate processor
-- Processor executes using AI
-- Status updated in real-time
+### 3. Processamento Assíncrono
+- Comando enfileirado no Event Hub
+- Pipeline o captura
+- Roteia para o processador apropriado
+- Processador executa usando IA
+- Status atualizado em tempo real
 
-### 4. Result Retrieval
-- Poll command status endpoint
-- Get results when completed
-- Handle errors if failed
+### 4. Recuperação de Resultados
+- Consulte o endpoint de status do comando
+- Obtenha resultados quando concluído
+- Trate erros se falhar
 
-## 🎓 Key Concepts
+## 🎓 Conceitos-Chave
 
 ### CommandMessage
-Complete command specification:
-- **command_id** - Unique identifier
-- **command_type** - What to do
-- **parameters** - How to do it
-- **status** - Current state
-- **result** - Execution outcome
+Especificação completa do comando:
+- **command_id** - Identificador único
+- **command_type** - O que fazer
+- **parameters** - Como fazer
+- **status** - Estado atual
+- **result** - Resultado da execução
 
 ### CommandProcessor
-AI-powered executor:
-- Handles specific command types
-- Uses AI agent for intelligence
-- Updates command status
-- Returns structured results
+Executor alimentado por IA:
+- Trata tipos específicos de comando
+- Usa agente de IA para inteligência
+- Atualiza status do comando
+- Retorna resultados estruturados
 
 ### AsyncCommandPipeline
-Orchestration layer:
-- Receives commands
-- Routes to processors
-- Tracks status
-- Manages Event Hub communication
+Camada de orquestração:
+- Recebe comandos
+- Roteia para processadores
+- Rastreia status
+- Gerencia comunicação com Event Hub
 
-## 📊 Real-World Use Cases
+## 📊 Casos de Uso do Mundo Real
 
-Perfect for:
+Perfeito para:
 
-1. 📄 **Document Processing**
-   - Command: "process_document"
+1. 📄 **Processamento de Documentos**
+   - Comando: "process_document"
    - Params: document_id, operations
-   - Result: Processed document
+   - Resultado: Documento processado
 
-2. 🔍 **Search Operations**
-   - Command: "search_content"
+2. 🔍 **Operações de Busca**
+   - Comando: "search_content"
    - Params: query, filters
-   - Result: Search results
+   - Resultado: Resultados da busca
 
-3. 📧 **Email Campaigns**
-   - Command: "send_campaign"
+3. 📧 **Campanhas de E-mail**
+   - Comando: "send_campaign"
    - Params: recipients, template
-   - Result: Send status
+   - Resultado: Status de envio
 
-4. 📊 **Report Generation**
-   - Command: "generate_report"
+4. 📊 **Geração de Relatórios**
+   - Comando: "generate_report"
    - Params: data_source, format
-   - Result: Generated report
+   - Resultado: Relatório gerado
 
-5. 🔄 **Data Migration**
-   - Command: "migrate_data"
+5. 🔄 **Migração de Dados**
+   - Comando: "migrate_data"
    - Params: source, destination
-   - Result: Migration status
+   - Resultado: Status da migração
 
-## 🎯 Advanced Features
+## 🎯 Funcionalidades Avançadas
 
-### Command Status Lifecycle
+### Ciclo de Vida do Status do Comando
 ```
-PENDING → PROCESSING → COMPLETED
-                    ↓
-                  FAILED
+PENDENTE → PROCESSANDO → CONCLUÍDO
+                      ↓
+                   FALHOU
 ```
 
-### Multiple Processors per Type
-Multiple agents can handle same command type:
-- Load balancing
-- Redundancy
-- Specialization
+### Múltiplos Processadores por Tipo
+Múltiplos agentes podem tratar o mesmo tipo de comando:
+- Balanceamento de carga
+- Redundância
+- Especialização
 
-### Command Metadata
-Track additional context:
-- Priority levels
-- User information
-- Correlation IDs
-- Tags and labels
+### Metadados do Comando
+Rastrear contexto adicional:
+- Níveis de prioridade
+- Informações do usuário
+- IDs de correlação
+- Tags e rótulos
 
-### Error Handling
-Robust error management:
-- Automatic retry logic
-- Dead letter queues
-- Error notifications
-- Detailed error messages
+### Tratamento de Erros
+Gerenciamento robusto de erros:
+- Lógica de retry automático
+- Filas de mensagens mortas (dead letter)
+- Notificações de erro
+- Mensagens de erro detalhadas
 
-## 🔐 Best Practices
+## 🔐 Melhores Práticas
 
-1. ✅ **Idempotency** - Commands can be retried safely
-2. ✅ **Timeouts** - Set execution time limits
-3. ✅ **Validation** - Validate parameters before processing
-4. ✅ **Logging** - Track all command executions
-5. ✅ **Monitoring** - Alert on failures and slow commands
+1. ✅ **Idempotência** - Comandos podem ser retentados com segurança
+2. ✅ **Timeouts** - Defina limites de tempo de execução
+3. ✅ **Validação** - Valide parâmetros antes do processamento
+4. ✅ **Logging** - Rastreie todas as execuções de comandos
+5. ✅ **Monitoramento** - Alerte sobre falhas e comandos lentos
 
-## 📈 Monitoring & Metrics
+## 📈 Monitoramento e Métricas
 
-Track key metrics:
-- Commands submitted per type
-- Average processing time
-- Success/failure rates
-- Processor utilization
-- Queue depth
+Rastreie métricas principais:
+- Comandos enviados por tipo
+- Tempo médio de processamento
+- Taxas de sucesso/falha
+- Utilização de processadores
+- Profundidade da fila
 
 ```python
 processor_info = {
@@ -354,38 +331,38 @@ processor_info = {
 }
 ```
 
-## 🆚 Command vs Event Patterns
+## 🆚 Padrões Comando vs Evento
 
-| Aspect | Command | Event |
-|--------|---------|-------|
-| **Intent** | Do something | Something happened |
-| **Direction** | Point-to-point | Broadcast |
-| **Response** | Expected | Optional |
-| **Tracking** | By ID | By correlation |
+| Aspecto | Comando | Evento |
+|---------|---------|--------|
+| **Intenção** | Fazer algo | Algo aconteceu |
+| **Direção** | Ponto-a-ponto | Broadcast |
+| **Resposta** | Esperada | Opcional |
+| **Rastreamento** | Por ID | Por correlação |
 
-## 🎬 Series Wrap-Up!
+## 🎬 Encerramento da Série!
 
-We've covered all 4 patterns:
-1. ✅ **Message Queue** - Intelligent monitoring
-2. ✅ **Pipes & Filters** - Cognitive transformations
-3. ✅ **Pub/Sub** - Event-driven agents
-4. ✅ **Command Messages** - Async command execution
+Cobrimos todos os 4 padrões:
+1. ✅ **Fila de Mensagens** - Monitoramento inteligente
+2. ✅ **Pipes e Filtros** - Transformações cognitivas
+3. ✅ **Pub/Sub** - Agentes orientados a eventos
+4. ✅ **Mensagens de Comando** - Execução assíncrona de comandos
 
-## 🙏 Thank You!
+## 🙏 Obrigado!
 
-You made it to the end! 🎉
+Você chegou até o final! 🎉
 
-- 👍 Like if you learned something
-- 💬 Comment your favorite pattern
-- 📢 Share the entire series
-- 🔔 Subscribe for more!
+- 👍 Curta se você aprendeu algo
+- 💬 Comente seu padrão favorito
+- 📢 Compartilhe a série inteira
+- 🔔 Inscreva-se para mais!
 
 ---
 
-**🔗 Resources:**
-- [Command Message Pattern](https://www.enterpriseintegrationpatterns.com/patterns/messaging/CommandMessage.html)
+**🔗 Recursos:**
+- [Padrão Command Message](https://www.enterpriseintegrationpatterns.com/patterns/messaging/CommandMessage.html)
 - [Azure Event Hubs](https://learn.microsoft.com/azure/event-hubs/)
 - [Azure AI Foundry](https://learn.microsoft.com/azure/ai-studio/)
-- [Async Python](https://docs.python.org/3/library/asyncio.html)
+- [Python Assíncrono](https://docs.python.org/3/library/asyncio.html)
 
-**#CommandPattern #AsyncProgramming #AIAgents #AzureAI #EnterpriseIntegration**
+**#PadrãoCommand #ProgramaçãoAssíncrona #AgentesDeIA #AzureAI #IntegraçãoEmpresarial**

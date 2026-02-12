@@ -14,17 +14,8 @@ cd reactor-enterprise-integration-agents
 ### 2. Configure o Ambiente Python
 
 ```bash
-# Crie um ambiente virtual
-python3 -m venv .venv
-
-# Ative o ambiente virtual
-# No Linux/macOS:
-source .venv/bin/activate
-# No Windows:
-.venv\Scripts\activate
-
-# Instale as dependências
-pip install -r requirements.txt
+# Instale as dependências com uv
+uv sync
 ```
 
 ### 3. Execute Exemplos Locais (Sem Azure)
@@ -199,13 +190,13 @@ Execute os testes:
 
 ```bash
 # Instale dependências de teste
-pip install pytest pytest-asyncio
+uv sync
 
 # Execute todos os testes
-pytest tests/ -v
+uv run pytest tests/ -v
 
 # Execute testes específicos
-pytest tests/test_pipes_and_filters.py -v
+uv run pytest tests/test_pipes_and_filters.py -v
 ```
 
 **Resultado esperado:** Todos os testes passando ✅
