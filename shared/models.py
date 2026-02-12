@@ -35,10 +35,11 @@ class AgentMessage(BaseModel):
     metadata: Dict[str, Any] = Field(default_factory=dict, description="Metadados adicionais")
     correlation_id: Optional[str] = Field(default=None, description="ID de correlação")
     
-    class Config:
-        json_encoders = {
+    model_config = {
+        "json_encoders": {
             datetime: lambda v: v.isoformat()
         }
+    }
 
 
 class CommandMessage(AgentMessage):
