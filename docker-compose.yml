@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # Pattern 1: Message Queue Monitor and Executor
+  pattern-1-message-queue:
+    build:
+      context: .
+      dockerfile: pattern-1-message-queue/Dockerfile
+      target: development
+    container_name: pattern-1-api
+    ports:
+      - "8000:8000"
+    environment:
+      - PROJECT_CONNECTION_STRING=${PROJECT_CONNECTION_STRING}
+      - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
+      - EVENTHUB_NAME=${EVENTHUB_NAME}
+      - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./pattern-1-message-queue:/app/pattern-1-message-queue
+      - ./shared:/app/shared
+    networks:
+      - integration-network
+    restart: unless-stopped
+
+  # Pattern 2: Pipes and Filters with Cognitive Capabilities
+  pattern-2-pipes-filters:
+    build:
+      context: .
+      dockerfile: pattern-2-pipes-filters/Dockerfile
+      target: development
+    container_name: pattern-2-api
+    ports:
+      - "8001:8001"
+    environment:
+      - PROJECT_CONNECTION_STRING=${PROJECT_CONNECTION_STRING}
+      - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
+      - EVENTHUB_NAME=${EVENTHUB_NAME}
+      - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./pattern-2-pipes-filters:/app/pattern-2-pipes-filters
+      - ./shared:/app/shared
+    networks:
+      - integration-network
+    restart: unless-stopped
+
+  # Pattern 3: Publish/Subscribe with AI Agents
+  pattern-3-pubsub:
+    build:
+      context: .
+      dockerfile: pattern-3-pubsub/Dockerfile
+      target: development
+    container_name: pattern-3-api
+    ports:
+      - "8002:8002"
+    environment:
+      - PROJECT_CONNECTION_STRING=${PROJECT_CONNECTION_STRING}
+      - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
+      - EVENTHUB_NAME=${EVENTHUB_NAME}
+      - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./pattern-3-pubsub:/app/pattern-3-pubsub
+      - ./shared:/app/shared
+    networks:
+      - integration-network
+    restart: unless-stopped
+
+  # Pattern 4: Command Messages with Async Pipelines
+  pattern-4-command-messages:
+    build:
+      context: .
+      dockerfile: pattern-4-command-messages/Dockerfile
+      target: development
+    container_name: pattern-4-api
+    ports:
+      - "8003:8003"
+    environment:
+      - PROJECT_CONNECTION_STRING=${PROJECT_CONNECTION_STRING}
+      - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
+      - EVENTHUB_NAME=${EVENTHUB_NAME}
+      - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./pattern-4-command-messages:/app/pattern-4-command-messages
+      - ./shared:/app/shared
+    networks:
+      - integration-network
+    restart: unless-stopped
+
+networks:
+  integration-network:
+    driver: bridge
+
+# Volumes for persistent data (if needed)
+volumes:
+  shared-data:
