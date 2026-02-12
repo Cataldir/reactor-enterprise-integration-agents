@@ -24,27 +24,27 @@ class EventHubAdapter:
         self.connection_string = connection_string
         self.eventhub_name = eventhub_name
         self.consumer_group = consumer_group
-        self._producer: Optional[EventHubProducerClient] = None
-        self._consumer: Optional[EventHubConsumerClient] = None
+        self.producer: Optional[EventHubProducerClient] = None
+        self.consumer: Optional[EventHubConsumerClient] = None
     
     async def get_producer(self) -> EventHubProducerClient:
         """Get or create producer client."""
-        if self._producer is None:
-            self._producer = EventHubProducerClient.from_connection_string(
+        if self.producer is None:
+            self.producer = EventHubProducerClient.from_connection_string(
                 self.connection_string,
                 eventhub_name=self.eventhub_name,
             )
-        return self._producer
+        return self.producer
     
     async def get_consumer(self) -> EventHubConsumerClient:
         """Get or create consumer client."""
-        if self._consumer is None:
-            self._consumer = EventHubConsumerClient.from_connection_string(
+        if self.consumer is None:
+            self.consumer = EventHubConsumerClient.from_connection_string(
                 self.connection_string,
                 consumer_group=self.consumer_group,
                 eventhub_name=self.eventhub_name,
             )
-        return self._consumer
+        return self.consumer
     
     async def send_event(self, data: Any) -> None:
         """Send an event to Event Hub."""
@@ -55,12 +55,10 @@ class EventHubAdapter:
             data = json.dumps(data)
         
         event_data = EventData(data)
-        
-        async with producer:
-            event_data_batch = await producer.create_batch()
-            event_data_batch.add(event_data)
-            await producer.send_batch(event_data_batch)
-            logger.info(f"Sent event to Event Hub: {self.eventhub_name}")
+        event_data_batch = await producer.create_batch()
+        event_data_batch.add(event_data)
+        await producer.send_batch(event_data_batch)
+        logger.info(f"Sent event to Event Hub: {self.eventhub_name}")
     
     async def receive_events(
         self,
@@ -92,8 +90,8 @@ class EventHubAdapter:
     
     async def close(self) -> None:
         """Close producer and consumer clients."""
-        if self._producer:
-            await self._producer.close()
-        if self._consumer:
-            await self._consumer.close()
+        if self.producer:
+            await self.producer.close()
+        if self.consumer:
+            await self.consumer.close()
         logger.info("Event Hub adapter closed")

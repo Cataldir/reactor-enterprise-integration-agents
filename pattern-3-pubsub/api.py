@@ -7,7 +7,7 @@ Provides REST API endpoints for publishing messages and managing subscribers.
 import asyncio
 import logging
 import uuid
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from datetime import datetime
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks
