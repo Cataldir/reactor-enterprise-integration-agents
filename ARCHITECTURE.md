@@ -87,9 +87,9 @@ Observabilidade embutida:
 graph TB
     subgraph Azure["Nuvem Azure"]
         subgraph AIF["Serviço Azure AI Foundry"]
-            A1["Agente 1 (GPT-4)"]
-            A2["Agente 2 (GPT-4)"]
-            AN["Agente N (GPT-4)"]
+            A1["Agente 1 (GPT-5.2)"]
+            A2["Agente 2 (GPT-5.2)"]
+            AN["Agente N (GPT-5.2)"]
         end
         AIF -->|Azure AI SDK v2| APP
         subgraph APP["Camada de Aplicação de Integração"]

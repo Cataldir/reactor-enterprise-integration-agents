@@ -12,6 +12,9 @@ services:
       - "8000:8000"
     environment:
       - AZURE_AI_PROJECT_ENDPOINT=${AZURE_AI_PROJECT_ENDPOINT}
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      - AZURE_CLIENT_CERTIFICATE_PATH=${AZURE_CLIENT_CERTIFICATE_PATH}
       - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
       - EVENTHUB_NAME=${EVENTHUB_NAME}
       - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
@@ -19,6 +22,7 @@ services:
     volumes:
       - ./src/services/message_queue:/app/src/services/message_queue
       - ./src/shared:/app/src/shared
+      - ${AZURE_CLIENT_CERTIFICATE_PATH_HOST}:/app/certs/azure-sp.pem:ro
     networks:
       - integration-network
     restart: unless-stopped
@@ -34,6 +38,9 @@ services:
       - "8001:8001"
     environment:
       - AZURE_AI_PROJECT_ENDPOINT=${AZURE_AI_PROJECT_ENDPOINT}
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      - AZURE_CLIENT_CERTIFICATE_PATH=${AZURE_CLIENT_CERTIFICATE_PATH}
       - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
       - EVENTHUB_NAME=${EVENTHUB_NAME}
       - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
@@ -41,6 +48,7 @@ services:
     volumes:
       - ./src/services/pipes_filters:/app/src/services/pipes_filters
       - ./src/shared:/app/src/shared
+      - ${AZURE_CLIENT_CERTIFICATE_PATH_HOST}:/app/certs/azure-sp.pem:ro
     networks:
       - integration-network
     restart: unless-stopped
@@ -56,6 +64,9 @@ services:
       - "8002:8002"
     environment:
       - AZURE_AI_PROJECT_ENDPOINT=${AZURE_AI_PROJECT_ENDPOINT}
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      - AZURE_CLIENT_CERTIFICATE_PATH=${AZURE_CLIENT_CERTIFICATE_PATH}
       - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
       - EVENTHUB_NAME=${EVENTHUB_NAME}
       - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
@@ -63,6 +74,7 @@ services:
     volumes:
       - ./src/services/pubsub:/app/src/services/pubsub
       - ./src/shared:/app/src/shared
+      - ${AZURE_CLIENT_CERTIFICATE_PATH_HOST}:/app/certs/azure-sp.pem:ro
     networks:
       - integration-network
     restart: unless-stopped
@@ -78,6 +90,9 @@ services:
       - "8003:8003"
     environment:
       - AZURE_AI_PROJECT_ENDPOINT=${AZURE_AI_PROJECT_ENDPOINT}
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      - AZURE_CLIENT_CERTIFICATE_PATH=${AZURE_CLIENT_CERTIFICATE_PATH}
       - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
       - EVENTHUB_NAME=${EVENTHUB_NAME}
       - MODEL_DEPLOYMENT_NAME=${MODEL_DEPLOYMENT_NAME:-gpt-4}
@@ -85,6 +100,7 @@ services:
     volumes:
       - ./src/services/command_messages:/app/src/services/command_messages
       - ./src/shared:/app/src/shared
+      - ${AZURE_CLIENT_CERTIFICATE_PATH_HOST}:/app/certs/azure-sp.pem:ro
     networks:
       - integration-network
     restart: unless-stopped

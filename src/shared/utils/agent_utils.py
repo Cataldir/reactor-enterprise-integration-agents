@@ -40,6 +40,7 @@ def load_env_config() -> dict:
     
     return {
         "azure_ai_project_endpoint": os.getenv("AZURE_AI_PROJECT_ENDPOINT"),
+        "eventhub_fully_qualified_namespace": os.getenv("EVENTHUB_FULLY_QUALIFIED_NAMESPACE"),
         "eventhub_connection_string": os.getenv("EVENTHUB_CONNECTION_STRING"),
         "eventhub_name": os.getenv("EVENTHUB_NAME"),
         "azure_openai_endpoint": os.getenv("AZURE_OPENAI_ENDPOINT"),

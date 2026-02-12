@@ -95,7 +95,7 @@ async def startup_event() -> None:
         project_client = get_project_client()
         model_name = config.get("model_deployment_name", "gpt-4")
         
-        # Create Event Hub adapter
+        # Create Event Hub adapter (SAS key auth)
         eventhub_adapter = EventHubAdapter(
             connection_string=config["eventhub_connection_string"],
             eventhub_name=config["eventhub_name"],

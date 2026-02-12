@@ -184,7 +184,7 @@ async def main() -> None:
     # Initialize clients
     project_client = get_project_client()
     
-    # Create EventHub adapter
+    # Create EventHub adapter (SAS key auth)
     eventhub_adapter = EventHubAdapter(
         connection_string=config["eventhub_connection_string"],
         eventhub_name=config["eventhub_name"],
