@@ -1,194 +1,293 @@
-# Reactor Enterprise Integration Agents
+# 🚀 Reactor Enterprise Integration Agents
 
-> Integração de Agentes do Azure AI Foundry com Padrões de Integração Empresarial
+A comprehensive repository demonstrating **Enterprise Integration Patterns** using **Azure AI Foundry Agents (v2 SDK)** and **Azure Event Hubs**.
 
-Um repositório que documenta e demonstra, em Python 3.13 e usando serviços da Azure, como integrar agentes do Azure AI Foundry em padrões clássicos de integração empresarial.
+## 📺 YouTube Series: "Deep Dive em Integrações Empresariais para Aplicações de AI"
 
-## 🎯 Objetivo
+This repository contains complete, production-ready examples of four core enterprise integration patterns, each enhanced with **cognitive capabilities** from AI agents.
 
-Fala se não é curioso saber como os agentes encaixam em um **Message Queue** ou um **Pipes and Filters**?
+## 🎯 What's Inside?
 
-Ou qual a forma mais produtiva de entregar Agentes que trabalham em **Pub/Sub** e **Command Messages**?
+Four distinct integration patterns, each in its own folder with:
+- ✅ Complete source code with Azure AI Foundry integration
+- ✅ Dockerfile (base + development images)
+- ✅ MCP (Model Context Protocol) integration layer
+- ✅ FastAPI REST API endpoints
+- ✅ Comprehensive README with YouTube presentation style
+- ✅ Real-world use cases and examples
 
-Este repositório oferece um deep dive em integrações empresariais para aplicações de AI, com exemplos práticos e código pronto para uso.
+## 🏗️ Architecture Overview
 
-## 🏗️ Padrões de Integração Implementados
-
-### 1. Message Queue (Fila de Mensagens)
-- Agentes como consumidores e produtores de mensagens
-- Integração com Azure Service Bus Queues
-- Processamento assíncrono e resiliente
-- Exemplos: `/patterns/message_queue/`
-
-### 2. Pipes and Filters (Pipeline de Processamento)
-- Cadeia de agentes com filtros sequenciais
-- Processamento em pipeline com transformações
-- Composição de agentes especializados
-- Exemplos: `/patterns/pipes_and_filters/`
-
-### 3. Publish-Subscribe (Pub/Sub)
-- Múltiplos agentes assinando tópicos
-- Integração com Azure Service Bus Topics
-- Comunicação desacoplada e escalável
-- Exemplos: `/patterns/pubsub/`
-
-### 4. Command Messages (Mensagens de Comando)
-- Comunicação baseada em comandos
-- Padrão Request-Reply com agentes
-- Orquestração de tarefas complexas
-- Exemplos: `/patterns/command_messages/`
-
-## 📋 Pré-requisitos
-
-- Python 3.13+
-- Conta Azure com acesso ao Azure Service Bus
-- Azure AI Foundry configurado (opcional para alguns exemplos)
-
-## 🚀 Instalação
-
-```bash
-# Clone o repositório
-git clone https://github.com/Cataldir/reactor-enterprise-integration-agents.git
-cd reactor-enterprise-integration-agents
-
-# Crie um ambiente virtual
-python3.13 -m venv .venv
-source .venv/bin/activate  # No Windows: .venv\Scripts\activate
-
-# Instale as dependências
-pip install -e .
-
-# Para desenvolvimento
-pip install -e ".[dev]"
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   Azure AI Foundry                          │
+│              (AI Agents - v2 SDK)                           │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│              MCP Integration Layer                          │
+│         (Model Context Protocol + FastAPI)                  │
+└────────┬────────────────────────────────────────────────────┘
+         │
+         ├────────────┬────────────┬────────────┬─────────────┐
+         │            │            │            │             │
+         ▼            ▼            ▼            ▼             ▼
+┌──────────────┐ ┌─────────┐ ┌─────────┐ ┌──────────┐ ┌──────────┐
+│   Pattern 1  │ │Pattern 2│ │Pattern 3│ │Pattern 4 │ │  Shared  │
+│   Message    │ │ Pipes & │ │ Pub/Sub │ │ Command  │ │ Utils    │
+│   Queue      │ │ Filters │ │         │ │ Messages │ │          │
+└──────────────┘ └─────────┘ └─────────┘ └──────────┘ └──────────┘
+         │            │            │            │
+         └────────────┴────────────┴────────────┘
+                       │
+                       ▼
+         ┌─────────────────────────┐
+         │   Azure Event Hubs      │
+         │   (Message Broker)      │
+         └─────────────────────────┘
 ```
 
-## ⚙️ Configuração
-
-Crie um arquivo `.env` na raiz do projeto:
-
-```env
-# Azure Service Bus
-AZURE_SERVICEBUS_CONNECTION_STRING=your_connection_string_here
-AZURE_SERVICEBUS_QUEUE_NAME=agent-queue
-AZURE_SERVICEBUS_TOPIC_NAME=agent-topic
-AZURE_SERVICEBUS_SUBSCRIPTION_NAME=agent-subscription
-
-# Azure AI Foundry (opcional)
-AZURE_OPENAI_ENDPOINT=your_endpoint_here
-AZURE_OPENAI_API_KEY=your_api_key_here
-AZURE_OPENAI_DEPLOYMENT_NAME=your_deployment_name
-```
-
-## 📖 Estrutura do Projeto
+## 📁 Repository Structure
 
 ```
 reactor-enterprise-integration-agents/
-├── patterns/                      # Implementações dos padrões
-│   ├── message_queue/            # Padrão Message Queue
-│   ├── pipes_and_filters/        # Padrão Pipes and Filters
-│   ├── pubsub/                   # Padrão Publish-Subscribe
-│   └── command_messages/         # Padrão Command Messages
-├── agents/                       # Implementações de agentes
-│   ├── base_agent.py            # Classe base para agentes
-│   └── examples/                # Exemplos de agentes específicos
-├── shared/                       # Código compartilhado
-│   ├── models.py                # Modelos de dados (Pydantic)
-│   └── azure_clients.py         # Clientes Azure reutilizáveis
-├── docs/                        # Documentação detalhada
-│   ├── pt-br/                   # Documentação em Português
-│   └── architecture/            # Diagramas de arquitetura
-├── examples/                    # Exemplos de uso completos
-└── tests/                       # Testes unitários e de integração
+├── shared/                          # Shared utilities
+│   ├── mcp/                        # MCP integration layer
+│   │   ├── __init__.py            # Base MCP classes
+│   │   └── fastapi_mcp.py         # FastAPI MCP server
+│   └── utils/                      # Common utilities
+│       ├── agent_utils.py         # Agent management
+│       └── eventhub_utils.py      # Event Hub integration
+├── pattern-1-message-queue/        # Pattern 1: Message Queue
+│   ├── main.py                    # Core implementation
+│   ├── api.py                     # REST API server
+│   ├── Dockerfile                 # Container configuration
+│   └── README.md                  # Pattern documentation
+├── pattern-2-pipes-filters/        # Pattern 2: Pipes and Filters
+│   ├── main.py                    # Core implementation
+│   ├── api.py                     # REST API server
+│   ├── Dockerfile                 # Container configuration
+│   └── README.md                  # Pattern documentation
+├── pattern-3-pubsub/              # Pattern 3: Pub/Sub
+│   ├── main.py                    # Core implementation
+│   ├── api.py                     # REST API server
+│   ├── Dockerfile                 # Container configuration
+│   └── README.md                  # Pattern documentation
+├── pattern-4-command-messages/     # Pattern 4: Command Messages
+│   ├── main.py                    # Core implementation
+│   ├── api.py                     # REST API server
+│   ├── Dockerfile                 # Container configuration
+│   └── README.md                  # Pattern documentation
+├── ARCHITECTURE.md                # Detailed architecture guide
+├── pyproject.toml                 # Python project configuration
+├── requirements.txt               # Python dependencies
+├── requirements-dev.txt           # Development dependencies
+├── .env.example                   # Environment variables template
+└── README.md                      # This file
 ```
 
-## 🎓 Como Usar
+## 🎓 The Four Patterns
 
-### Exemplo 1: Agent em Message Queue
+### 1️⃣ Message Queue Monitor and Executor
+**Port: 8000** | [📖 Documentation](pattern-1-message-queue/README.md)
 
-```python
-from patterns.message_queue import MessageQueueAgent
-from shared.azure_clients import get_service_bus_client
+AI agents monitor message queues and intelligently process tasks. Perfect for:
+- Task distribution and processing
+- Work queue management
+- Background job processing
 
-# Cria um agente consumidor de fila
-agent = MessageQueueAgent(
-    name="ProcessingAgent",
-    queue_name="tasks-queue"
-)
+### 2️⃣ Pipes and Filters with Cognitive Capabilities
+**Port: 8001** | [📖 Documentation](pattern-2-pipes-filters/README.md)
 
-# Inicia o processamento
-await agent.start_processing()
+Sequential or parallel processing pipeline where each filter is an AI agent. Perfect for:
+- Data transformation pipelines
+- Content processing workflows
+- Multi-stage analysis
+
+### 3️⃣ Publish/Subscribe with AI Subscribers
+**Port: 8002** | [📖 Documentation](pattern-3-pubsub/README.md)
+
+Event-driven architecture with AI agents as intelligent subscribers. Perfect for:
+- Event-driven microservices
+- Real-time analytics
+- Multi-consumer event processing
+
+### 4️⃣ Command Messages with Async Pipelines
+**Port: 8003** | [📖 Documentation](pattern-4-command-messages/README.md)
+
+Command-driven architecture with asynchronous execution. Perfect for:
+- Long-running operations
+- Trackable command execution
+- Async request/response
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+1. **Azure Services:**
+   - Azure AI Foundry project with deployed model
+   - Azure Event Hub namespace and hub
+
+2. **Local Environment:**
+   - Python 3.11+
+   - Docker (optional)
+
+### Installation
+
+1. **Clone the repository:**
+```bash
+git clone https://github.com/Cataldir/reactor-enterprise-integration-agents.git
+cd reactor-enterprise-integration-agents
 ```
 
-### Exemplo 2: Pipeline com Pipes and Filters
-
-```python
-from patterns.pipes_and_filters import Pipeline, FilterAgent
-
-# Cria um pipeline de processamento
-pipeline = Pipeline([
-    FilterAgent("DataValidator"),
-    FilterAgent("DataTransformer"),
-    FilterAgent("DataEnricher"),
-])
-
-# Processa dados através do pipeline
-result = await pipeline.process(input_data)
+2. **Configure environment:**
+```bash
+cp .env.example .env
+# Edit .env with your Azure credentials
 ```
 
-### Exemplo 3: Pub/Sub com Múltiplos Agentes
-
-```python
-from patterns.pubsub import SubscriberAgent, PublisherAgent
-
-# Cria agentes assinantes
-subscriber1 = SubscriberAgent("AnalyticsAgent", topic="events")
-subscriber2 = SubscriberAgent("NotificationAgent", topic="events")
-
-# Cria agente publicador
-publisher = PublisherAgent(topic="events")
-
-# Publica evento
-await publisher.publish({"event": "user_action", "data": {...}})
+3. **Install dependencies:**
+```bash
+pip install -r requirements.txt
 ```
 
-## 🧪 Testes
+### Running Individual Patterns
+
+Each pattern can run independently:
 
 ```bash
-# Executar todos os testes
-pytest
+# Pattern 1: Message Queue
+cd pattern-1-message-queue
+python api.py  # Starts on port 8000
 
-# Executar com cobertura
-pytest --cov=patterns --cov=agents
+# Pattern 2: Pipes and Filters
+cd pattern-2-pipes-filters
+python api.py  # Starts on port 8001
 
-# Executar testes específicos
-pytest tests/test_message_queue.py
+# Pattern 3: Pub/Sub
+cd pattern-3-pubsub
+python api.py  # Starts on port 8002
+
+# Pattern 4: Command Messages
+cd pattern-4-command-messages
+python api.py  # Starts on port 8003
 ```
 
-## 📚 Documentação Adicional
+### Using Docker
 
-- [Guia de Padrões de Integração](docs/pt-br/integration-patterns.md)
-- [Arquitetura de Agentes](docs/pt-br/agent-architecture.md)
-- [Melhores Práticas](docs/pt-br/best-practices.md)
-- [Troubleshooting](docs/pt-br/troubleshooting.md)
+Each pattern has its own Dockerfile:
 
-## 🤝 Contribuindo
+```bash
+# Build pattern (example for Pattern 1)
+cd pattern-1-message-queue
+docker build -t message-queue-agent --target production .
 
-Contribuições são bem-vindas! Por favor:
+# Run with environment file
+docker run --env-file ../.env -p 8000:8000 message-queue-agent
+```
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
+## 🔧 Configuration
 
-## 📄 Licença
+All patterns use the same environment variables:
 
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+```bash
+# Azure AI Foundry
+PROJECT_CONNECTION_STRING=your_connection_string
 
-## 🙏 Agradecimentos
+# Azure Event Hub
+EVENTHUB_CONNECTION_STRING=your_eventhub_connection
+EVENTHUB_NAME=your_hub_name
 
-Este projeto foi desenvolvido para demonstrar a integração de agentes de AI com padrões empresariais consolidados, facilitando a adoção de AI em ambientes corporativos.
+# Model Configuration
+MODEL_DEPLOYMENT_NAME=gpt-4
+
+# Logging
+LOG_LEVEL=INFO
+```
+
+## 📚 Key Technologies
+
+- **Azure AI Foundry (v2 SDK)** - Intelligent AI agents
+- **Azure Event Hubs** - Enterprise message broker
+- **FastAPI** - Modern web framework
+- **MCP (Model Context Protocol)** - Standardized AI communication
+- **Python 3.11+** - Modern async Python
+- **Docker** - Containerization
+
+## 🎯 Use Cases by Industry
+
+### 🏦 Financial Services
+- Transaction processing (Queue)
+- Fraud detection pipeline (Pipes & Filters)
+- Real-time risk monitoring (Pub/Sub)
+- Account operations (Commands)
+
+### 🛒 E-Commerce
+- Order processing (Queue)
+- Product data enrichment (Pipes & Filters)
+- Inventory updates (Pub/Sub)
+- Customer actions (Commands)
+
+### 🏥 Healthcare
+- Patient record processing (Queue)
+- Medical data analysis (Pipes & Filters)
+- Alert distribution (Pub/Sub)
+- Treatment protocols (Commands)
+
+### 📱 IoT/Smart Devices
+- Sensor data processing (Queue)
+- Data transformation (Pipes & Filters)
+- Device event handling (Pub/Sub)
+- Device control (Commands)
+
+## 🔐 Security Best Practices
+
+1. ✅ Use Azure Managed Identity
+2. ✅ Store secrets in Azure Key Vault
+3. ✅ Enable network isolation
+4. ✅ Implement proper authentication
+5. ✅ Monitor and audit access
+6. ✅ Use least privilege principle
+
+## 📖 Documentation
+
+- [Architecture Guide](ARCHITECTURE.md) - Detailed system architecture
+- [Pattern 1 Guide](pattern-1-message-queue/README.md) - Message Queue
+- [Pattern 2 Guide](pattern-2-pipes-filters/README.md) - Pipes and Filters
+- [Pattern 3 Guide](pattern-3-pubsub/README.md) - Pub/Sub
+- [Pattern 4 Guide](pattern-4-command-messages/README.md) - Command Messages
+
+## 🤝 Contributing
+
+This is an educational repository for demonstrating enterprise integration patterns. Feel free to:
+- Open issues for questions
+- Submit PRs for improvements
+- Share your use cases
+- Provide feedback
+
+## 📺 YouTube Content
+
+This repository accompanies the YouTube series **"Deep Dive em Integrações Empresariais para Aplicações de AI"**. Each pattern's README is written in a presentation style suitable for video content.
+
+## 📄 License
+
+[MIT License](LICENSE)
+
+## 🙏 Acknowledgments
+
+Built with:
+- Azure AI Foundry
+- Azure Event Hubs
+- FastAPI
+- Python Community
 
 ---
 
-**Bora pro deep dive em integrações empresariais para aplicações de AI!** 🚀
+**🔗 Useful Links:**
+- [Azure AI Foundry Documentation](https://learn.microsoft.com/azure/ai-studio/)
+- [Azure Event Hubs Documentation](https://learn.microsoft.com/azure/event-hubs/)
+- [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+
+**#AzureAI #EnterpriseIntegration #AIAgents #Python #CloudComputing #Microservices**
